@@ -12,13 +12,6 @@ import UIKit
 class NodeData: NSObject
 {
     weak var graph : NodeGraphData? = nil
-    var index : String = ""
-    var title : String = NodeData.defaultTitle
-    var frame : CGRect = CGRect.init(x: 0, y: 0, width: NodeData.defaultSize.width, height: NodeData.defaultSize.height)
-    var selected : Bool = false
-    var inPorts : Array<NodePortData> = NodeData.defaultInPorts
-    var outPorts : Array<NodePortData> = NodeData.defaultOutPorts
-    var previewOutportIndex : Int = NodeData.defaultPreviewOutportIndex
     
     class var defaultCanHavePreview: Bool { return false }
     class var defaultPreviewOutportIndex: Int { return -1 }
@@ -28,7 +21,35 @@ class NodeData: NSObject
     class var defaultInPorts: Array<NodePortData> { return [] }
     class var defaultOutPorts: Array<NodePortData> { return [] }
     
+    var index : String = ""
+    var title : String = defaultTitle
+    var frame : CGRect = CGRect.init(x: 0, y: 0, width: defaultSize.width, height: defaultSize.height)
+    var selected : Bool = false
+    var inPorts : Array<NodePortData> = defaultInPorts
+    var outPorts : Array<NodePortData> = defaultOutPorts
+    var previewOutportIndex : Int = defaultPreviewOutportIndex
+
+    func isSingleNode() -> Bool
+    {
+        return graph?.singleNodes.contains(self) ?? false
+    }
+    
     func shaderCommentHeader() -> String
+    {
+        return ""
+    }
+    
+    func breakAllConnections() -> Void
+    {
+        
+    }
+    
+    func expressionRule() -> String
+    {
+        return ""
+    }
+    
+    func previewShaderExperssion() -> String
     {
         return ""
     }

@@ -13,6 +13,7 @@
 		0D16EF8E2236211800EDA588 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D16EF8D2236211800EDA588 /* Assets.xcassets */; };
 		0D16EF912236211800EDA588 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D16EF8F2236211800EDA588 /* LaunchScreen.storyboard */; };
 		0D32EC032237FB2300500C9B /* Dynamic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D32EC022237FB2300500C9B /* Dynamic.swift */; };
+		0D32EC052238165100500C9B /* CGData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D32EC042238165100500C9B /* CGData.swift */; };
 		0DB0DF472237DF2500880FE9 /* NodeGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0DF462237DF2500880FE9 /* NodeGraphView.swift */; };
 		0DB0DF492237DF3400880FE9 /* NodeGraphContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0DF482237DF3400880FE9 /* NodeGraphContainerView.swift */; };
 		0DB0DF4B2237DF4500880FE9 /* NodeGraphDrawRectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0DF4A2237DF4500880FE9 /* NodeGraphDrawRectView.swift */; };
@@ -32,6 +33,7 @@
 		0D16EF902236211800EDA588 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0D16EF922236211800EDA588 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0D32EC022237FB2300500C9B /* Dynamic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dynamic.swift; sourceTree = "<group>"; };
+		0D32EC042238165100500C9B /* CGData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGData.swift; sourceTree = "<group>"; };
 		0DB0DF462237DF2500880FE9 /* NodeGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeGraphView.swift; sourceTree = "<group>"; };
 		0DB0DF482237DF3400880FE9 /* NodeGraphContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeGraphContainerView.swift; sourceTree = "<group>"; };
 		0DB0DF4A2237DF4500880FE9 /* NodeGraphDrawRectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeGraphDrawRectView.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 				0DB0DF4C2237E34D00880FE9 /* NodeData.swift */,
 				0DB0DF522237E9E500880FE9 /* NodePortData.swift */,
 				0DB0DF542237E9EF00880FE9 /* NodeConnectionData.swift */,
+				0D32EC042238165100500C9B /* CGData.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				0DB0DF4F2237E35700880FE9 /* NodeGraphData.swift in Sources */,
 				0DB0DF472237DF2500880FE9 /* NodeGraphView.swift in Sources */,
 				0DB0DF552237E9EF00880FE9 /* NodeConnectionData.swift in Sources */,
+				0D32EC052238165100500C9B /* CGData.swift in Sources */,
 				0DB0DF512237E47900880FE9 /* NodeView.swift in Sources */,
 				0DB0DF492237DF3400880FE9 /* NodeGraphContainerView.swift in Sources */,
 				0D16EF892236211600EDA588 /* NodeEditorViewController.swift in Sources */,

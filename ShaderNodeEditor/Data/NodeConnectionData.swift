@@ -10,5 +10,11 @@ import Foundation
 
 class NodeConnectionData: NSObject
 {
+    var inPort : NodePortData? = nil;
+    weak var outPort : NodePortData? = nil;
     
+    func expressionRule() -> String
+    {
+        return ""
+    }
 }
