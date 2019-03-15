@@ -27,31 +27,43 @@ class NodePortData: NSObject
     
     func getPortVariableName() -> String
     {
-        return ""
+        return "var_\(index)"
     }
     
     func breakAllConnections() -> Void
     {
-        
+        for connection in connections
+        {
+            if connection.inPort != self
+            {
+                connection.inPort.connections.remove(connection)
+            }
+            if connection.outPort != self
+            {
+                connection.outPort.connections.remove(connection)
+            }
+        }
     }
     
     func isInPortRelativeToNode() -> Bool
     {
-        return true
+        guard let node = node else { return false }
+        return node.inPorts.contains(self)
     }
     
     func isOutPortRelativeToNode() -> Bool
     {
-        return true
+        guard let node = node else { return false }
+        return node.outPorts.contains(self)
     }
     
     func isInPortRelativeToConnection() -> Bool
     {
-        return true
+        return isOutPortRelativeToNode()
     }
     
     func isOutPortRelativeToConnection() -> Bool
     {
-        return true
+        return isInPortRelativeToNode()
     }
 }
