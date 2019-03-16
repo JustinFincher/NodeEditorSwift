@@ -8,8 +8,8 @@
 
 import UIKit
 
-public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, NodeGraphViewDataSource
-{
+public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, NodeGraphViewDataSource,NodeListTableViewControllerSelectDelegate
+{    
     let nodeEditorData : NodeGraphData = NodeGraphData()
     let nodeEditorView : NodeGraphScrollView = NodeGraphScrollView(frame: CGRect.zero, canvasSize: CGSize.init(width: 2000, height: 2000))
     
@@ -17,7 +17,6 @@ public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, 
     {
         super.viewDidLoad()
         self.title = "Shader Node Editor"
-        
         nodeEditorView.frame = self.view.bounds
         nodeEditorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.view.addSubview(nodeEditorView)
@@ -27,16 +26,20 @@ public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, 
             nodeGraphView.delegate = self;
             nodeGraphView.dataSource = self;
             nodeGraphView.reloadData()
+            
+            nodeEditorData.nodeGraphDataUpdatedHandler = {
+                nodeGraphView.reloadData()
+            }
         }
     }
     
-    public func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
+    public func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView
     {
-        guard let nodeData = nodeEditorData.getNode(index: nodeWithIndex) else {
-            return nil
-        }
         let nodeView : NodeView = NodeView()
-        nodeView.data = nodeData
+        if let nodeData = nodeEditorData.getNode(index: nodeWithIndex)
+        {
+            nodeView.data = nodeData
+        }
         return nodeView
     }
     
@@ -57,8 +60,16 @@ public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, 
             
     }
     
-    public func requiredViewController() -> UIViewController {
+    public func requiredViewController() -> NodeEditorViewController {
         return self
+    }
+    
+    // MARK: - NodeListTableViewControllerSelectDelegate
+    public func nodeClassSelected(controller: NodeListTableViewController, nodeDataClass: AnyClass)
+    {
+        let nodeDataType = nodeDataClass as! NodeData.Type
+        let nodeData = nodeDataType.init()
+        nodeEditorData.addNode(node: nodeData)
     }
 }
 

@@ -91,7 +91,32 @@ public class NodeGraphContainerView: UIView
         
     }
     
-    func reloadData() -> Void {
-        
+    func reloadData() -> Void
+    {
+        let nodeViews = subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
+        for view : NodeView in nodeViews
+        {
+            self.collisionBehavior.removeItem(view)
+            self.dynamicItemBehavior.removeItem(view)
+            view.data?.frame = view.frame
+            view.removeFromSuperview()
+        }
+        guard let nodeGraphView = nodeGraphView, let dataSource = nodeGraphView.dataSource else
+        {
+            return
+        }
+        let count : Int = dataSource.numberOfNodes(in: nodeGraphView)
+        for i in 0 ..< count
+        {
+            let nodeView : NodeView = dataSource.nodeGraphView(nodeGraphView: nodeGraphView, nodeWithIndex: "\(i)")
+            guard let nodeData = nodeView.data else
+            {
+                continue
+            }
+            nodeView.frame = nodeData.frame
+            addSubview(nodeView)
+            
+            // TODO add recogiser
+        }
     }
 }

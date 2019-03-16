@@ -102,8 +102,9 @@ public class NodeGraphData: NSObject
 {
     var singleNodes : Set<NodeData> = []
     private var indexNodeDataDict : Dictionary<String,NodeData> = [:]
-    let updateDictOperation : UpdateDictOperation = UpdateDictOperation()
+    var updateDictOperation : UpdateDictOperation?
     let updateDictOperationQuene : OperationQueue = OperationQueue()
+    var nodeGraphDataUpdatedHandler: (() -> Void)?
     
     public override init()
     {
@@ -190,13 +191,26 @@ public class NodeGraphData: NSObject
     
     private func updateIndexNodeDataDict() -> Void
     {
-        if (updateDictOperation.isExecuting)
+        if let oldUpdateDictOperation = updateDictOperation
         {
-            updateDictOperation.cancel()
+            if (oldUpdateDictOperation.isExecuting)
+            {
+                oldUpdateDictOperation.cancel()
+            }
+        }
+        self.updateDictOperation = UpdateDictOperation()
+        guard let updateDictOperation = updateDictOperation else
+        {
+            return
         }
         updateDictOperation.singleNodes = singleNodes
-        updateDictOperation.completionBlock = {
-            self.indexNodeDataDict = self.updateDictOperation.outDict
+        updateDictOperation.completionBlock =
+            {
+                self.indexNodeDataDict = updateDictOperation.outDict
+                if let nodeGraphDataUpdatedHandler = self.nodeGraphDataUpdatedHandler
+                {
+                    nodeGraphDataUpdatedHandler()
+                }
         }
         updateDictOperationQuene.addOperation(updateDictOperation)
     }

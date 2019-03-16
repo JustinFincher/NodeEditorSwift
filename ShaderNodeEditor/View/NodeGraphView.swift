@@ -17,14 +17,13 @@ public protocol NodeGraphViewDelegate: AnyObject
 
 public protocol NodeGraphViewDataSource: AnyObject
 {
-    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
+    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView
     func numberOfNodes(in: NodeGraphView) -> Int
-    func requiredViewController() -> UIViewController
+    func requiredViewController() -> NodeEditorViewController
 }
 
 public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
 {
-    
     var containerView : NodeGraphContainerView?
     var drawRectView : NodeGraphDrawRectView?
     weak var delegate: NodeGraphViewDelegate?
@@ -42,7 +41,7 @@ public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
         self.postInit()
     }
     
-    init(frame: CGRect, parentScrollView: NodeGraphScrollView)
+    required init(frame: CGRect, parentScrollView: NodeGraphScrollView)
     {
         super.init(frame: frame)
         self.parentScrollView = parentScrollView
@@ -101,6 +100,7 @@ public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
             popoverViewController.sourceView = nodeGraphContainerView
             popoverViewController.delegate = nodeListViewController;
             self.dataSource?.requiredViewController().present(nodeListNaviController, animated: true, completion: {})
+            nodeListViewController.delegate = self.dataSource?.requiredViewController()
         }
     }
 }

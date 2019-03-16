@@ -48,6 +48,11 @@ public enum NodeType
     var outPorts : Array<NodePortData> = defaultOutPorts
     var previewOutportIndex : Int = defaultPreviewOutportIndex
     
+    required override init()
+    {
+        super.init()
+    }
+    
     // single node shader block, need to override
     func singleNodeExpressionRule() -> String
     {
