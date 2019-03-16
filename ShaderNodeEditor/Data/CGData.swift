@@ -8,7 +8,7 @@
 
 import Foundation
 
-class CGData: NSObject
+public class CGData: NSObject
 {
     class var defaultCGType : String { return "float" }
     class var defaultCGValue : String { return "0.0" }

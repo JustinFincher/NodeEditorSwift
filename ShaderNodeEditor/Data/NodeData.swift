@@ -9,7 +9,14 @@
 import Foundation
 import UIKit
 
-class NodeData: NSObject
+public enum NodeType
+{
+    case Generator
+    case Comsumer
+    case Sensor
+    case Modifier
+}
+@objc public class NodeData: NSObject
 {
     weak var graph : NodeGraphData? = nil
     
@@ -84,6 +91,11 @@ class NodeData: NSObject
     func breakAllConnections() -> Void
     {
         
+    }
+    
+    func nodeType() -> NodeType
+    {
+        return NodeType.Generator
     }
     
 }

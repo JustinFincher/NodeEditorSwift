@@ -9,8 +9,10 @@
 import Foundation
 import UIKit
 
-class NodeGraphDrawRectView: UIView
+public class NodeGraphDrawRectView: UIView
 {
+    weak var nodeGraphView : NodeGraphView?
+    
     override init(frame: CGRect)
     {
         super.init(frame: frame)
@@ -22,13 +24,32 @@ class NodeGraphDrawRectView: UIView
         self.postInit()
     }
     
+    init(frame: CGRect, nodeGraphView: NodeGraphView)
+    {
+        super.init(frame: frame)
+        self.nodeGraphView = nodeGraphView
+        self.postInit()
+    }
+    
     func postInit() -> Void
+    {
+        isUserInteractionEnabled = true
+        isOpaque = false
+        backgroundColor = UIColor.clear
+    }
+    
+    override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
+    {
+        setNeedsDisplay()
+        return nil
+    }
+    
+    override public func draw(_ rect: CGRect)
     {
         
     }
     
-    override func draw(_ rect: CGRect)
-    {
+    func reloadData() -> Void {
         
     }
 }

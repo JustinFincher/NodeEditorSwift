@@ -9,23 +9,27 @@
 import Foundation
 import UIKit
 
-protocol NodeGraphViewDelegate: AnyObject
+public protocol NodeGraphViewDelegate: AnyObject
 {
-    func nodeGraphView(nodeGraphView: NodeGraphView, frameForNodeWithIndex: NSString) -> CGRect
-    func nodeGraphView(nodeGraphView: NodeGraphView, didSelectNodeWithIndex: NSString)
+    func nodeGraphView(nodeGraphView: NodeGraphView, frameForNodeWithIndex: String) -> CGRect
+    func nodeGraphView(nodeGraphView: NodeGraphView, didSelectNodeWithIndex: String)
 }
 
-protocol NodeGraphViewDataSource: AnyObject
+public protocol NodeGraphViewDataSource: AnyObject
 {
-    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: NSString) -> NodeView
+    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
     func numberOfNodes(in: NodeGraphView) -> Int
+    func requiredViewController() -> UIViewController
 }
 
-class NodeGraphView: UIView
+public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
 {
-    let containerView : NodeGraphContainerView = NodeGraphContainerView(frame: CGRect.zero)
-    let drawRectView : NodeGraphDrawRectView = NodeGraphDrawRectView(frame: CGRect.zero)
     
+    var containerView : NodeGraphContainerView?
+    var drawRectView : NodeGraphDrawRectView?
+    weak var delegate: NodeGraphViewDelegate?
+    weak var dataSource: NodeGraphViewDataSource?
+    weak var parentScrollView: NodeGraphScrollView?
     
     override init(frame: CGRect)
     {
@@ -38,12 +42,65 @@ class NodeGraphView: UIView
         self.postInit()
     }
     
+    init(frame: CGRect, parentScrollView: NodeGraphScrollView)
+    {
+        super.init(frame: frame)
+        self.parentScrollView = parentScrollView
+        self.postInit()
+    }
+    
     func postInit() -> Void
     {
-        containerView.frame = self.bounds
-        self.addSubview(containerView)
+        containerView = NodeGraphContainerView(frame: self.bounds, nodeGraphView:self)
+        if let containerView = containerView
+        {
+            self.addSubview(containerView)
+            containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            containerView.delegate = self
+        }
         
-        drawRectView.frame = self.bounds
-        self.addSubview(drawRectView)
+        drawRectView = NodeGraphDrawRectView(frame: self.bounds, nodeGraphView:self)
+        if let drawRectView = drawRectView
+        {
+            self.addSubview(drawRectView)
+            drawRectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        }
+    }
+    
+    func reloadData() -> Void
+    {
+        guard let containerView = containerView else
+        {
+            return
+        }
+        containerView.reloadData()
+        
+        guard let drawRectView = drawRectView else
+        {
+            return
+        }
+        drawRectView.reloadData()
+    }
+    
+    public func nodeMoved(nodeGraphContainerView: NodeGraphContainerView) {
+        if nodeGraphContainerView == self.containerView
+        {
+            self.drawRectView!.setNeedsDisplay()
+        }
+    }
+    
+    public func showNodeList(nodeGraphContainerView: NodeGraphContainerView, location: CGPoint)
+    {
+        let nodeListViewController : NodeListTableViewController = NodeListTableViewController()
+        let nodeListNaviController : UINavigationController = UINavigationController(rootViewController: nodeListViewController)
+        nodeListNaviController.modalPresentationStyle = .popover
+        
+        if let popoverViewController : UIPopoverPresentationController = nodeListNaviController.popoverPresentationController
+        {
+            popoverViewController.sourceRect = CGRect.init(origin: location, size: CGSize.init(width: 1, height: 1))
+            popoverViewController.sourceView = nodeGraphContainerView
+            popoverViewController.delegate = nodeListViewController;
+            self.dataSource?.requiredViewController().present(nodeListNaviController, animated: true, completion: {})
+        }
     }
 }

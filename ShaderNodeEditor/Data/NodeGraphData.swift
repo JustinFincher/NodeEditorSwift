@@ -8,12 +8,12 @@
 
 import Foundation
 
-class UpdateDictOperation: Operation
+public class UpdateDictOperation: Operation
 {
     var singleNodes: Set<NodeData>?
     var outDict:Dictionary<String,NodeData> = [:]
     
-    override func main()
+    override public func main()
     {
         guard let singleNodes = singleNodes else { return }
         outDict.removeAll()
@@ -98,21 +98,27 @@ class UpdateDictOperation: Operation
     }
 }
 
-class NodeGraphData: NSObject
+public class NodeGraphData: NSObject
 {
     var singleNodes : Set<NodeData> = []
     private var indexNodeDataDict : Dictionary<String,NodeData> = [:]
     let updateDictOperation : UpdateDictOperation = UpdateDictOperation()
     let updateDictOperationQuene : OperationQueue = OperationQueue()
     
-    override init()
+    public override init()
     {
         super.init()
+        updateIndexNodeDataDict()
     }
     
     func getNodesTotalCount() -> Int
     {
         return indexNodeDataDict.count
+    }
+    
+    func getNode(index: String) -> NodeData?
+    {
+        return indexNodeDataDict[index]
     }
     
     func addNode(node: NodeData) -> Bool

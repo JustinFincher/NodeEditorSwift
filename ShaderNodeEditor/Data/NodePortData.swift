@@ -8,7 +8,7 @@
 
 import Foundation
 
-class NodePortData: NSObject
+public class NodePortData: NSObject
 {
     weak var node : NodeData? = nil
     

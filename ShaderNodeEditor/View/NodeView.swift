@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class NodeView: UIView
+public class NodeView: UIView
 {
-    
+    weak var data : NodeData?
 }
