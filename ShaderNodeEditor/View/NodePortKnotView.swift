@@ -8,14 +8,11 @@
 
 import UIKit
 
-public class NodePortKnotView: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+public class NodePortKnotView: UIView
+{
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
+    {
+        return CGRect.init(x: 4, y: 4, width: self.frame.size.width - 8, height: self.frame.size.height - 8).contains(point) ? self : nil
     }
-    */
 
 }

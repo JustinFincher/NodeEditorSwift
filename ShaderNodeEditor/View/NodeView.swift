@@ -12,25 +12,101 @@ import SpriteKit
 
 public class NodeView: UIView, UIGestureRecognizerDelegate
 {
-    
-    weak var data : NodeData?
+    weak var data : NodeData?{
+        didSet
+        {
+            guard let data = data else
+            {
+                self.subviews.forEach { (view) in
+                    view.removeFromSuperview()
+                }
+                return
+            }
+            inPortsContainer.removeFromSuperview()
+            outPortsContainer.removeFromSuperview()
+            if data.inPorts.count != 0 || data.outPorts.count != 0
+            {
+                inPortsContainer.frame = CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
+                                                                          y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding),
+                                                     size: CGSize.init(width: (self.frame.size.width - Constant.nodePadding * 3) / 2.0,
+                                                                       height: CGFloat(data.inPorts.count) * Constant.nodePortHeight))
+                outPortsContainer.frame = CGRect.init(origin: CGPoint.init(x: (self.frame.size.width + Constant.nodePadding) / 2.0,
+                                                                           y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding),
+                                                      size: CGSize.init(width: (self.frame.size.width - Constant.nodePadding * 3) / 2.0,
+                                                                        height: CGFloat(data.outPorts.count) * Constant.nodePortHeight))
+            }else if (data.inPorts.count == 0 || data.outPorts.count != 0)
+            {
+                inPortsContainer.frame = CGRect.zero
+                outPortsContainer.frame = CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
+                                                                           y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding),
+                                                      size: CGSize.init(width: self.frame.size.width - Constant.nodePadding * 2,
+                                                                        height: CGFloat(data.outPorts.count) * Constant.nodePortHeight))
+            }else if (data.inPorts.count != 0 || data.outPorts.count == 0)
+            {
+                inPortsContainer.frame = CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
+                                                                          y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding),
+                                                     size: CGSize.init(width: self.frame.size.width - Constant.nodePadding * 2,
+                                                                       height: CGFloat(data.inPorts.count) * Constant.nodePortHeight))
+                outPortsContainer.frame = CGRect.zero
+            }else
+            {
+                inPortsContainer.frame = CGRect.zero
+                outPortsContainer.frame = CGRect.zero
+            }
+            
+            for i in 0..<data.inPorts.count
+            {
+                let nodePortView : NodePortView = NodePortView(frame: CGRect.init(x: 0,
+                                                                                  y: CGFloat(i) * Constant.nodePortHeight,
+                                                                                  width: inPortsContainer.frame.width,
+                                                                                  height: Constant.nodePortHeight),
+                                                               data: data.inPorts[i],
+                                                               isOutPort: false,
+                                                               nodeView: self)
+                inPortsContainer.addSubview(nodePortView)
+                if let pan = pan, let longPress = longPress, let knotPan = nodePortView.panOnKnot
+                {
+                    pan.require(toFail: knotPan)
+                    longPress.require(toFail: knotPan)
+                }
+                ports.insert(nodePortView)
+            }
+            
+            visualEffectView.contentView.addSubview(inPortsContainer)
+            visualEffectView.contentView.addSubview(outPortsContainer)
+            
+            previewView.removeFromSuperview()
+            if data.hasPreview
+            {
+                previewView.frame = CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
+                                                                     y: self.frame.size.height - self.frame.size.width + Constant.nodePadding),
+                                                size: CGSize.init(width: self.frame.size.width - Constant.nodePadding * 2,
+                                                                  height: self.frame.size.width - Constant.nodePadding * 2))
+                let scene : SKScene = SKScene(size: previewView.frame.size)
+                scene.anchorPoint = CGPoint.init(x: 0.5, y: 0.5)
+                let shaderNode : SKSpriteNode = SKSpriteNode(color: UIColor.black, size: scene.size)
+                shaderNode.shader = SKShader(source: data.previewShaderExperssion())
+                scene.addChild(shaderNode)
+                previewView.presentScene(scene)
+                visualEffectView.contentView.addSubview(previewView)
+            }
+        }
+    }
     weak var graphContainerView : NodeGraphContainerView?
     let visualEffectView : UIVisualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffect.Style.regular))
     var attachmentBehavior : UIAttachmentBehavior?
     var pushBehavior : UIPushBehavior?
-    let ports : Set<NodePortView> = []
+    var ports : Set<NodePortView> = []
     let previewView : SKView = SKView(frame: CGRect.zero)
     let valueView : UIView = UIView(frame: CGRect.zero)
     
-    let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                             action: #selector(handleTap(recognizer:)))
-    let longPress : UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
-                                                                                action: #selector(handleLongPress(recognizer:)))
-    let pan : UIPanGestureRecognizer = UIPanGestureRecognizer(target: self,
-                                                              action: #selector(handlePan(recognizer:)))
+    var tap: UITapGestureRecognizer?
+    var longPress : UILongPressGestureRecognizer?
+    var pan : UIPanGestureRecognizer?
     
     let inPortsContainer : UIView = UIView(frame: CGRect.zero)
     let outPortsContainer : UIView = UIView(frame: CGRect.zero)
+    let titleLabel : UILabel = UILabel(frame: CGRect.zero)
     
     var nodeViewSelectedHandler: (() -> Void)?
     
@@ -39,9 +115,12 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
     required init(frame:CGRect, data:NodeData, parent:NodeGraphContainerView)
     {
         super.init(frame: frame)
-        self.data = data
-        self.graphContainerView = parent
-        postInit()
+        defer
+        {
+            self.data = data
+            self.graphContainerView = parent
+            postInit()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -63,11 +142,43 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         visualEffectView.layer.cornerRadius = 8
         addSubview(visualEffectView)
         
-        addGestureRecognizer(tap)
-        pan.delegate = self
-        addGestureRecognizer(pan)
-        longPress.delegate = self
-        addGestureRecognizer(longPress)
+        tap = UITapGestureRecognizer(target: self,
+                                     action: #selector(handleTap(recognizer:)))
+        if let tap = tap
+        {
+            addGestureRecognizer(tap)
+        }
+        pan = UIPanGestureRecognizer(target: self,
+                                     action: #selector(handlePan(recognizer:)))
+        if let pan = pan
+        {
+            pan.delegate = self
+            addGestureRecognizer(pan)
+        }
+        longPress = UILongPressGestureRecognizer(target: self,
+                                                 action: #selector(handleLongPress(recognizer:)))
+        if let longPress = longPress
+        {
+            longPress.delegate = self
+            addGestureRecognizer(longPress)
+        }
+        
+        titleLabel.frame = CGRect.init(x: Constant.nodePadding, y: Constant.nodePadding, width: self.frame.size.width - Constant.nodePadding * 2, height: Constant.nodeTitleHeight)
+        titleLabel.text = data?.title
+        titleLabel.font = UIFont.init(name: Constant.fontObliqueName, size: 16)
+        
+        visualEffectView.contentView.addSubview(titleLabel)
+        
+        inPortsContainer.backgroundColor = UIColor.red.withAlphaComponent(0.1)
+        inPortsContainer.layer.cornerRadius = 4;
+        inPortsContainer.layer.masksToBounds = true
+        outPortsContainer.backgroundColor = UIColor.blue.withAlphaComponent(0.1)
+        outPortsContainer.layer.cornerRadius = 4;
+        outPortsContainer.layer.masksToBounds = true
+        
+        previewView.layer.cornerRadius = 8
+        previewView.layer.masksToBounds = true
+        previewView.showsFPS = true
     }
     
     func updateNode() -> Void
@@ -152,7 +263,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         graphContainerView?.bringSubviewToFront(self)
         nodeViewSelectedHandler?()
         let velocityInParent = recognizer.velocity(in: graphContainerView)
-        let locationInSelf = recognizer.location(in: graphContainerView)
+        let locationInSelf = recognizer.location(in: self)
         
         switch recognizer.state
         {
@@ -226,8 +337,8 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                 let length = hypot(velocityInParent.x, velocityInParent.y)
                 if length > 100
                 {
-                    pushBehavior.pushDirection = CGVector.init(dx: velocityInParent.x / 4.0 / pow(length, 0.5),
-                                                                dy: velocityInParent.y / 4.0 / pow(length, 0.5))
+                    pushBehavior.pushDirection = CGVector.init(dx: velocityInParent.x / 4.0 / pow(length, 0.5) ,
+                                                               dy: velocityInParent.y / 4.0 / pow(length, 0.5))
                     graphContainerView?.dynamicAnimator?.addBehavior(pushBehavior)
                 }
             }
@@ -254,5 +365,20 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
     public override var canBecomeFirstResponder: Bool
     {
         return true
+    }
+    
+    public override func willMove(toSuperview newSuperview: UIView?) {
+        if newSuperview == nil
+        {
+            previewView.scene?.removeAllChildren()
+            previewView.presentScene(nil)
+            data = nil
+            while subviews.count > 0
+            {
+                var view = subviews.last
+                view?.removeFromSuperview()
+                view = nil
+            }
+        }
     }
 }

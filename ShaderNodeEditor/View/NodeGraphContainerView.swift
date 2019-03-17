@@ -49,7 +49,7 @@ public class NodeGraphContainerView: UIView
         dynamicItemBehavior.allowsRotation = false
         dynamicItemBehavior.friction = 1000
         dynamicItemBehavior.elasticity = 0.9
-        dynamicItemBehavior.resistance = 0.6
+        dynamicItemBehavior.resistance = 0.7
         dynamicItemBehavior.action = {
             let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
             for view : NodeView in nodeViews
@@ -61,6 +61,7 @@ public class NodeGraphContainerView: UIView
         dynamicAnimator.addBehavior(dynamicItemBehavior)
         
         collisionBehavior.collisionMode = .boundaries
+        collisionBehavior.translatesReferenceBoundsIntoBoundary = true
         collisionBehavior.action = {
             let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
             for view : NodeView in nodeViews
@@ -127,12 +128,15 @@ public class NodeGraphContainerView: UIView
             self.addSubview(nodeView)
             
             // TODO add recogiser
-            self.nodeGraphView?.parentScrollView?.panGestureRecognizer.require(toFail: nodeView.pan)
-            self.nodeGraphView?.parentScrollView?.panGestureRecognizer.require(toFail: nodeView.longPress)
-            self.nodeGraphView?.parentScrollView?.pinchGestureRecognizer!.require(toFail: nodeView.pan)
-            self.nodeGraphView?.parentScrollView?.pinchGestureRecognizer!.require(toFail: nodeView.longPress)
-            self.longPress?.require(toFail: nodeView.pan)
-            self.longPress?.require(toFail: nodeView.longPress)
+            if let nodePan = nodeView.pan, let nodeLongPress = nodeView.longPress
+            {
+                self.nodeGraphView?.parentScrollView?.panGestureRecognizer.require(toFail: nodePan)
+                self.nodeGraphView?.parentScrollView?.panGestureRecognizer.require(toFail: nodeLongPress)
+                self.nodeGraphView?.parentScrollView?.pinchGestureRecognizer!.require(toFail: nodePan)
+                self.nodeGraphView?.parentScrollView?.pinchGestureRecognizer!.require(toFail: nodeLongPress)
+                self.longPress?.require(toFail: nodePan)
+                self.longPress?.require(toFail: nodeLongPress)
+            }
             self.dynamicItemBehavior.addItem(nodeView)
             self.collisionBehavior.addItem(nodeView)
         }

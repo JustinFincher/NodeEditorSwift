@@ -147,7 +147,7 @@ public class NodeGraphData: NSObject
                 }
             }
         }
-        node.breakAllConnections()
+        node.breakAllConnections(clearPorts: true)
         updateIndexNodeDataDict()
         return true
     }

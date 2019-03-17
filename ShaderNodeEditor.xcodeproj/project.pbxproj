@@ -13,7 +13,7 @@
 		0D16EF8E2236211800EDA588 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D16EF8D2236211800EDA588 /* Assets.xcassets */; };
 		0D16EF912236211800EDA588 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D16EF8F2236211800EDA588 /* LaunchScreen.storyboard */; };
 		0D32EC032237FB2300500C9B /* Dynamic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D32EC022237FB2300500C9B /* Dynamic.swift */; };
-		0D32EC052238165100500C9B /* CGData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D32EC042238165100500C9B /* CGData.swift */; };
+		0D32EC052238165100500C9B /* ShaderDataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D32EC042238165100500C9B /* ShaderDataType.swift */; };
 		0DA91949223BDE57004A95AF /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA91948223BDE57004A95AF /* Constant.swift */; };
 		0DA9194B223BEDD4004A95AF /* NodeGraphScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9194A223BEDD4004A95AF /* NodeGraphScrollView.swift */; };
 		0DA9194D223BF847004A95AF /* NodePortView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9194C223BF847004A95AF /* NodePortView.swift */; };
@@ -30,6 +30,9 @@
 		0DB0DF512237E47900880FE9 /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0DF502237E47900880FE9 /* NodeView.swift */; };
 		0DB0DF532237E9E500880FE9 /* NodePortData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0DF522237E9E500880FE9 /* NodePortData.swift */; };
 		0DB0DF552237E9EF00880FE9 /* NodeConnectionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0DF542237E9EF00880FE9 /* NodeConnectionData.swift */; };
+		0DEE53AE223E834700031407 /* NodeInfoCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEE53AD223E834700031407 /* NodeInfoCacheManager.swift */; };
+		0DEE53B0223E957D00031407 /* ShaderFloatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEE53AF223E957D00031407 /* ShaderFloatType.swift */; };
+		0DEE53B3223E961E00031407 /* FloatNodePortData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEE53B2223E961E00031407 /* FloatNodePortData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,7 +44,7 @@
 		0D16EF902236211800EDA588 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0D16EF922236211800EDA588 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0D32EC022237FB2300500C9B /* Dynamic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dynamic.swift; sourceTree = "<group>"; };
-		0D32EC042238165100500C9B /* CGData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGData.swift; sourceTree = "<group>"; };
+		0D32EC042238165100500C9B /* ShaderDataType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderDataType.swift; sourceTree = "<group>"; };
 		0DA91948223BDE57004A95AF /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		0DA9194A223BEDD4004A95AF /* NodeGraphScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeGraphScrollView.swift; sourceTree = "<group>"; };
 		0DA9194C223BF847004A95AF /* NodePortView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePortView.swift; sourceTree = "<group>"; };
@@ -58,6 +61,9 @@
 		0DB0DF502237E47900880FE9 /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
 		0DB0DF522237E9E500880FE9 /* NodePortData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePortData.swift; sourceTree = "<group>"; };
 		0DB0DF542237E9EF00880FE9 /* NodeConnectionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConnectionData.swift; sourceTree = "<group>"; };
+		0DEE53AD223E834700031407 /* NodeInfoCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeInfoCacheManager.swift; sourceTree = "<group>"; };
+		0DEE53AF223E957D00031407 /* ShaderFloatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderFloatType.swift; sourceTree = "<group>"; };
+		0DEE53B2223E961E00031407 /* FloatNodePortData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatNodePortData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +123,8 @@
 			isa = PBXGroup;
 			children = (
 				0DA91957223C0688004A95AF /* NodeData */,
+				0DEE53B1223E958100031407 /* DataType */,
+				0DEE53B4223E962200031407 /* NodePortData */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -137,7 +145,7 @@
 				0DB0DF4C2237E34D00880FE9 /* NodeData.swift */,
 				0DB0DF522237E9E500880FE9 /* NodePortData.swift */,
 				0DB0DF542237E9EF00880FE9 /* NodeConnectionData.swift */,
-				0D32EC042238165100500C9B /* CGData.swift */,
+				0D32EC042238165100500C9B /* ShaderDataType.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -162,8 +170,25 @@
 				0DA91948223BDE57004A95AF /* Constant.swift */,
 				0D32EC022237FB2300500C9B /* Dynamic.swift */,
 				0DA91952223C05C8004A95AF /* Extensions.swift */,
+				0DEE53AD223E834700031407 /* NodeInfoCacheManager.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		0DEE53B1223E958100031407 /* DataType */ = {
+			isa = PBXGroup;
+			children = (
+				0DEE53AF223E957D00031407 /* ShaderFloatType.swift */,
+			);
+			path = DataType;
+			sourceTree = "<group>";
+		};
+		0DEE53B4223E962200031407 /* NodePortData */ = {
+			isa = PBXGroup;
+			children = (
+				0DEE53B2223E961E00031407 /* FloatNodePortData.swift */,
+			);
+			path = NodePortData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -244,14 +269,17 @@
 				0DA9194B223BEDD4004A95AF /* NodeGraphScrollView.swift in Sources */,
 				0DA91951223C01FC004A95AF /* NodeListTableViewController.swift in Sources */,
 				0DB0DF552237E9EF00880FE9 /* NodeConnectionData.swift in Sources */,
-				0D32EC052238165100500C9B /* CGData.swift in Sources */,
+				0D32EC052238165100500C9B /* ShaderDataType.swift in Sources */,
 				0DB0DF512237E47900880FE9 /* NodeView.swift in Sources */,
+				0DEE53B0223E957D00031407 /* ShaderFloatType.swift in Sources */,
+				0DEE53AE223E834700031407 /* NodeInfoCacheManager.swift in Sources */,
 				0DB0DF492237DF3400880FE9 /* NodeGraphContainerView.swift in Sources */,
 				0DA91949223BDE57004A95AF /* Constant.swift in Sources */,
 				0D16EF892236211600EDA588 /* NodeEditorViewController.swift in Sources */,
 				0DB0DF4B2237DF4500880FE9 /* NodeGraphDrawRectView.swift in Sources */,
 				0DA91959223C203A004A95AF /* FloatAddNodeData.swift in Sources */,
 				0DA9194F223BF856004A95AF /* NodePortKnotView.swift in Sources */,
+				0DEE53B3223E961E00031407 /* FloatNodePortData.swift in Sources */,
 				0D32EC032237FB2300500C9B /* Dynamic.swift in Sources */,
 				0DB0DF532237E9E500880FE9 /* NodePortData.swift in Sources */,
 				0D16EF872236211600EDA588 /* AppDelegate.swift in Sources */,

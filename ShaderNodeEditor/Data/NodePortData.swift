@@ -13,12 +13,25 @@ public class NodePortData: NSObject
     weak var node : NodeData? = nil
     
     class var defaultTitle : String { return "" }
-    class var defaultRequiredType : CGData.Type { return CGData.self }
+    class var defaultRequiredType : ShaderDataType.Type { return ShaderDataType.self }
     
     var index : String = ""
     var title : String = defaultTitle
     var connections : Set<NodeConnectionData> = []
-    var requiredType : CGData.Type = defaultRequiredType
+    var requiredType : ShaderDataType.Type = defaultRequiredType
+    
+    required override public init() {
+        super.init()
+        title = type(of: self).defaultTitle
+        requiredType = type(of: self).defaultRequiredType
+    }
+    
+    public convenience init(title : String)
+    {
+        self.init()
+        self.title = title
+        requiredType = type(of: self).defaultRequiredType
+    }
     
     func getPortDefaultValueExpression() -> String
     {

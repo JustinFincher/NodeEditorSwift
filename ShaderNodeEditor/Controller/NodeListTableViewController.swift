@@ -43,7 +43,7 @@ public class NodeListTableViewController: UIViewController, UIPopoverPresentatio
         
         DispatchQueue.global(qos: .background).async
             {
-                self.tableViewDataSource = NodeData.directSubclasses()
+                self.tableViewDataSource = NodeInfoCacheManager.shared.getNodeClasses()
                 DispatchQueue.main.async
                     {
                         self.tableView.reloadData()

@@ -11,4 +11,5 @@ import UIKit
 @objc public class FloatNodeData: NodeData
 {
     override class var defaultTitle: String { return "Number (float a)" }
+    override class var defaultCanHavePreview: Bool { return true }
 }

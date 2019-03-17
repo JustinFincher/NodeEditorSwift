@@ -23,7 +23,7 @@ public enum NodeType
     class var defaultCanHavePreview: Bool { return false }
     class var defaultPreviewOutportIndex: Int { return -1 }
     class var defaultTitle: String { return "" }
-    class var defaultSize: CGSize { return CGSize.init(width: 200, height: 300) }
+    class var defaultSize: CGSize { return CGSize.init(width: Constant.nodeWidth,height: 0) }
     class var defaultCustomViewSize: CGSize { return CGSize.zero }
     class var defaultInPorts: Array<NodePortData> { return [] }
     class var defaultOutPorts: Array<NodePortData> { return [] }
@@ -41,17 +41,34 @@ public enum NodeType
             }
         }
     }
-    var title : String = defaultTitle
+    var title : String = ""
     var frame : CGRect = CGRect.init(x: 0, y: 0, width: defaultSize.width, height: defaultSize.height)
     var selected : Bool = false
-    var inPorts : Array<NodePortData> = defaultInPorts
-    var outPorts : Array<NodePortData> = defaultOutPorts
-    var previewOutportIndex : Int = defaultPreviewOutportIndex
+    var inPorts : Array<NodePortData> = []
+    var outPorts : Array<NodePortData> = []
+    var previewOutportIndex : Int = -1
     var isSelected : Bool = false
+    var hasPreview : Bool = false
     
     required override init()
     {
         super.init()
+        title = type(of: self).defaultTitle
+        inPorts = type(of: self).defaultInPorts
+        outPorts = type(of: self).defaultOutPorts
+        previewOutportIndex = type(of: self).defaultPreviewOutportIndex
+        hasPreview = type(of: self).defaultCanHavePreview
+        
+        let width : CGFloat = Constant.nodeWidth
+        let height : CGFloat = Constant.nodePadding +
+            Constant.nodeTitleHeight +
+            (max(inPorts.count, outPorts.count) > 0 ? Constant.nodePadding : 0) +
+            Constant.nodePortHeight * CGFloat(max(inPorts.count, outPorts.count)) +
+            (hasPreview ? Constant.nodePadding : 0) +
+            (hasPreview ? (Constant.nodeWidth - Constant.nodePadding * 2) : 0) +
+            Constant.nodePadding
+        let size : CGSize = CGSize.init(width: width, height: height)
+        frame = CGRect.init(origin: frame.origin, size: size)
     }
     
     // single node shader block, need to override
@@ -67,7 +84,7 @@ public enum NodeType
     func shaderFinalColorExperssion() -> String
     {
         let zero : Float = 0;
-        return String(format: "gl_FragColor = vec4(%.8f,%.8f,%.8f,%.8f)",zero,zero,zero,zero)
+        return String(format: "gl_FragColor = vec4(%.8f,%.8f,%.8f,%.8f);",zero,zero,zero,zero)
     }
     
     func previewShaderExperssion() -> String
@@ -94,9 +111,20 @@ public enum NodeType
         return "\n// \(type(of: self)) Index \(index)"
     }
     
-    func breakAllConnections() -> Void
+    func breakAllConnections(clearPorts: Bool) -> Void
     {
+        inPorts.forEach { (portData) in
+            portData.breakAllConnections()
+        }
+        outPorts.forEach { (portData) in
+            portData.breakAllConnections()
+        }
         
+        if clearPorts
+        {
+            inPorts.removeAll()
+            outPorts.removeAll()
+        }
     }
     
     func nodeType() -> NodeType
