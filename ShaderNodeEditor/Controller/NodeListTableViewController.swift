@@ -10,7 +10,7 @@ import UIKit
 
 public protocol NodeListTableViewControllerSelectDelegate: AnyObject
 {
-    func nodeClassSelected(controller: NodeListTableViewController, nodeDataClass : AnyClass) -> Void
+    func nodeClassSelected(controller: NodeListTableViewController, nodeDataClass : AnyClass, point: CGPoint) -> Void
 }
 
 public class NodeListTableViewController: UIViewController, UIPopoverPresentationControllerDelegate, UITableViewDelegate, UITableViewDataSource
@@ -61,7 +61,10 @@ public class NodeListTableViewController: UIViewController, UIPopoverPresentatio
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         let selectedClass : AnyClass = self.tableViewDataSource[indexPath.row]
-        delegate?.nodeClassSelected(controller: self, nodeDataClass: selectedClass)
+        if let popoverPresentationController : UIPopoverPresentationController = self.navigationController!.presentationController as? UIPopoverPresentationController
+        {
+            delegate?.nodeClassSelected(controller: self, nodeDataClass: selectedClass, point: popoverPresentationController.sourceRect.origin)
+        }
         self.presentingViewController?.dismiss(animated: true, completion: {})
     }
     

@@ -47,6 +47,7 @@ public enum NodeType
     var inPorts : Array<NodePortData> = defaultInPorts
     var outPorts : Array<NodePortData> = defaultOutPorts
     var previewOutportIndex : Int = defaultPreviewOutportIndex
+    var isSelected : Bool = false
     
     required override init()
     {

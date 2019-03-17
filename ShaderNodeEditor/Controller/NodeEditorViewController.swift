@@ -28,19 +28,23 @@ public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, 
             nodeGraphView.reloadData()
             
             nodeEditorData.nodeGraphDataUpdatedHandler = {
-                nodeGraphView.reloadData()
+                DispatchQueue.main.async {
+                    nodeGraphView.reloadData()
+                }
             }
         }
     }
     
-    public func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView
+    public func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
     {
-        let nodeView : NodeView = NodeView()
-        if let nodeData = nodeEditorData.getNode(index: nodeWithIndex)
+        if let nodeData = nodeEditorData.getNode(index: nodeWithIndex), let containerView = nodeGraphView.containerView
         {
-            nodeView.data = nodeData
+            let nodeView : NodeView = NodeView(frame: nodeData.frame, data: nodeData, parent: containerView)
+            return nodeView
+        }else
+        {
+            return nil
         }
-        return nodeView
     }
     
     public func numberOfNodes(in: NodeGraphView) -> Int {
@@ -65,11 +69,15 @@ public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, 
     }
     
     // MARK: - NodeListTableViewControllerSelectDelegate
-    public func nodeClassSelected(controller: NodeListTableViewController, nodeDataClass: AnyClass)
+    public func nodeClassSelected(controller: NodeListTableViewController, nodeDataClass: AnyClass, point: CGPoint)
     {
         let nodeDataType = nodeDataClass as! NodeData.Type
         let nodeData = nodeDataType.init()
-        nodeEditorData.addNode(node: nodeData)
+        nodeData.frame = CGRect.init(origin: point, size: nodeData.frame.size)
+        if !nodeEditorData.addNode(node: nodeData)
+        {
+            
+        }
     }
 }
 

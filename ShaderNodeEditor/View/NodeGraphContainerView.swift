@@ -24,18 +24,12 @@ public class NodeGraphContainerView: UIView
     private var collisionBehavior : UICollisionBehavior = UICollisionBehavior(items: [])
     private var longPress: UILongPressGestureRecognizer?
     
-    override init(frame: CGRect)
-    {
-        super.init(frame: frame)
-        self.postInit()
-    }
-    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.postInit()
     }
     
-    init(frame: CGRect, nodeGraphView: NodeGraphView)
+    required init(frame: CGRect, nodeGraphView: NodeGraphView)
     {
         super.init(frame: frame)
         self.nodeGraphView = nodeGraphView
@@ -55,11 +49,25 @@ public class NodeGraphContainerView: UIView
         dynamicItemBehavior.friction = 1000
         dynamicItemBehavior.elasticity = 0.9
         dynamicItemBehavior.resistance = 0.6
-        dynamicItemBehavior.action = {}
+        dynamicItemBehavior.action = {
+            let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
+            for view : NodeView in nodeViews
+            {
+                view.updateNodeData()
+            }
+            self.delegate?.nodeMoved(nodeGraphContainerView: self)
+        }
         dynamicAnimator.addBehavior(dynamicItemBehavior)
         
         collisionBehavior.collisionMode = .boundaries
-        collisionBehavior.action = {}
+        collisionBehavior.action = {
+            let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
+            for view : NodeView in nodeViews
+            {
+                view.updateNodeData()
+            }
+            self.delegate?.nodeMoved(nodeGraphContainerView: self)
+        }
         dynamicAnimator.addBehavior(collisionBehavior)
         
         longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(recognizer:)))
@@ -93,7 +101,7 @@ public class NodeGraphContainerView: UIView
     
     func reloadData() -> Void
     {
-        let nodeViews = subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
+        let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
         for view : NodeView in nodeViews
         {
             self.collisionBehavior.removeItem(view)
@@ -101,22 +109,30 @@ public class NodeGraphContainerView: UIView
             view.data?.frame = view.frame
             view.removeFromSuperview()
         }
-        guard let nodeGraphView = nodeGraphView, let dataSource = nodeGraphView.dataSource else
+        guard let nodeGraphView = self.nodeGraphView, let dataSource = nodeGraphView.dataSource else
         {
             return
         }
         let count : Int = dataSource.numberOfNodes(in: nodeGraphView)
         for i in 0 ..< count
         {
-            let nodeView : NodeView = dataSource.nodeGraphView(nodeGraphView: nodeGraphView, nodeWithIndex: "\(i)")
-            guard let nodeData = nodeView.data else
+            guard let nodeView = dataSource.nodeGraphView(nodeGraphView: nodeGraphView, nodeWithIndex: "\(i)") else
             {
+                // WTF?
                 continue
             }
-            nodeView.frame = nodeData.frame
-            addSubview(nodeView)
+            self.addSubview(nodeView)
             
             // TODO add recogiser
+            self.nodeGraphView?.parentScrollView?.panGestureRecognizer.require(toFail: nodeView.pan)
+            self.nodeGraphView?.parentScrollView?.panGestureRecognizer.require(toFail: nodeView.longPress)
+            self.nodeGraphView?.parentScrollView?.pinchGestureRecognizer!.require(toFail: nodeView.pan)
+            self.nodeGraphView?.parentScrollView?.pinchGestureRecognizer!.require(toFail: nodeView.longPress)
+            self.longPress?.require(toFail: nodeView.pan)
+            self.longPress?.require(toFail: nodeView.longPress)
+            self.dynamicItemBehavior.addItem(nodeView)
+            self.collisionBehavior.addItem(nodeView)
         }
+        self.delegate?.nodeMoved(nodeGraphContainerView: self)
     }
 }

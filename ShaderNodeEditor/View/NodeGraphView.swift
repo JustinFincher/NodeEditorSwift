@@ -17,7 +17,7 @@ public protocol NodeGraphViewDelegate: AnyObject
 
 public protocol NodeGraphViewDataSource: AnyObject
 {
-    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView
+    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
     func numberOfNodes(in: NodeGraphView) -> Int
     func requiredViewController() -> NodeEditorViewController
 }
@@ -81,7 +81,8 @@ public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
         drawRectView.reloadData()
     }
     
-    public func nodeMoved(nodeGraphContainerView: NodeGraphContainerView) {
+    public func nodeMoved(nodeGraphContainerView: NodeGraphContainerView)
+    {
         if nodeGraphContainerView == self.containerView
         {
             self.drawRectView!.setNeedsDisplay()
