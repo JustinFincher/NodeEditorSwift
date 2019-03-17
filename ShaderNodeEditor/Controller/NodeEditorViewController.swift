@@ -68,12 +68,25 @@ public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, 
         return self
     }
     
+    public func delete(node: NodeData)
+    {
+        nodeEditorData.removeNode(node: node)
+    }
+    
     // MARK: - NodeListTableViewControllerSelectDelegate
     public func nodeClassSelected(controller: NodeListTableViewController, nodeDataClass: AnyClass, point: CGPoint)
     {
         let nodeDataType = nodeDataClass as! NodeData.Type
         let nodeData = nodeDataType.init()
-        nodeData.frame = CGRect.init(origin: point, size: nodeData.frame.size)
+        
+        let x = point.x - nodeData.frame.size.width / 2.0 > 8 ? point.x - nodeData.frame.size.width / 2.0 : 8
+        let y = point.y - nodeData.frame.size.height / 2.0 > 8 ? point.y - nodeData.frame.size.height / 2.0 : 8
+        let rect : CGRect = CGRect.init(x: x,
+                                        y: y,
+                                        width: nodeData.frame.size.width,
+                                        height: nodeData.frame.size.height)
+        
+        nodeData.frame = rect
         if !nodeEditorData.addNode(node: nodeData)
         {
             

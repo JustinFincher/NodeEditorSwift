@@ -88,7 +88,11 @@ public class NodeListTableViewController: UIViewController, UIPopoverPresentatio
     
     
     // MARK: - UIPopoverPresentationControllerDelegate
-    private func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+    public func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    public func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         return .none
     }
 }

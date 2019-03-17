@@ -19,6 +19,7 @@ public protocol NodeGraphViewDataSource: AnyObject
 {
     func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
     func numberOfNodes(in: NodeGraphView) -> Int
+    func delete(node: NodeData) -> Void
     func requiredViewController() -> NodeEditorViewController
 }
 
@@ -50,6 +51,7 @@ public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
     
     func postInit() -> Void
     {
+        backgroundColor = UIColor.init(displayP3Red: 239.0/255.0, green: 239.0/255.0, blue: 244.0/255.0, alpha: 1.0)
         containerView = NodeGraphContainerView(frame: self.bounds, nodeGraphView:self)
         if let containerView = containerView
         {
@@ -92,16 +94,18 @@ public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
     public func showNodeList(nodeGraphContainerView: NodeGraphContainerView, location: CGPoint)
     {
         let nodeListViewController : NodeListTableViewController = NodeListTableViewController()
+        nodeListViewController.delegate = self.dataSource?.requiredViewController()
         let nodeListNaviController : UINavigationController = UINavigationController(rootViewController: nodeListViewController)
         nodeListNaviController.modalPresentationStyle = .popover
         
-        if let popoverViewController : UIPopoverPresentationController = nodeListNaviController.popoverPresentationController
+        guard let popoverViewController : UIPopoverPresentationController = nodeListNaviController.popoverPresentationController else
         {
-            popoverViewController.sourceRect = CGRect.init(origin: location, size: CGSize.init(width: 1, height: 1))
-            popoverViewController.sourceView = nodeGraphContainerView
-            popoverViewController.delegate = nodeListViewController;
-            self.dataSource?.requiredViewController().present(nodeListNaviController, animated: true, completion: {})
-            nodeListViewController.delegate = self.dataSource?.requiredViewController()
+            return
         }
+        
+        popoverViewController.sourceRect = CGRect.init(origin: location, size: CGSize.init(width: 1, height: 1))
+        popoverViewController.sourceView = nodeGraphContainerView
+        popoverViewController.delegate = nodeListViewController as UIPopoverPresentationControllerDelegate;
+        self.dataSource?.requiredViewController().present(nodeListNaviController, animated: true, completion: {})
     }
 }

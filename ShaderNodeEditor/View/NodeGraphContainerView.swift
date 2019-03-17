@@ -38,6 +38,7 @@ public class NodeGraphContainerView: UIView
     
     func postInit() -> Void
     {
+        backgroundColor = UIColor.clear
         dynamicAnimator = UIDynamicAnimator(referenceView: self)
         
         guard let dynamicAnimator = dynamicAnimator else
@@ -53,7 +54,7 @@ public class NodeGraphContainerView: UIView
             let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
             for view : NodeView in nodeViews
             {
-                view.updateNodeData()
+                view.updateNode()
             }
             self.delegate?.nodeMoved(nodeGraphContainerView: self)
         }
@@ -64,7 +65,7 @@ public class NodeGraphContainerView: UIView
             let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
             for view : NodeView in nodeViews
             {
-                view.updateNodeData()
+                view.updateNode()
             }
             self.delegate?.nodeMoved(nodeGraphContainerView: self)
         }
@@ -86,11 +87,7 @@ public class NodeGraphContainerView: UIView
             let point = recognizer.location(in: self)
             delegate?.showNodeList(nodeGraphContainerView: self, location: point)
             break
-        case .possible: break
-        case .changed: break
-        case .ended: break
-        case .cancelled: break
-        case .failed: break
+        default: break
         }
     }
     
@@ -120,6 +117,12 @@ public class NodeGraphContainerView: UIView
             {
                 // WTF?
                 continue
+            }
+            nodeView.nodeViewSelectedHandler = {
+                self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}.forEach({ (eachNodeView) in
+                    eachNodeView.data?.isSelected = eachNodeView.data?.index == nodeView.data?.index
+                    eachNodeView.updateNode()
+                })
             }
             self.addSubview(nodeView)
             

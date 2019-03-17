@@ -66,7 +66,7 @@ public extension NSObject
 //
 //        }
         
-        for i in 0 ..< actualClassCount
+        for i in 0 ..< actualClassCount - 1
         {
             if let currentClass: AnyClass = allClasses[Int(i)]
             {

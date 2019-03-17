@@ -10,7 +10,8 @@ import UIKit
 
 public class Constant: NSObject
 {
-
+    public static let nodeScaleNormal : CGFloat = 1.0
+    public static let nodeScaleZoomed : CGFloat = 1.1
 }
 
 public extension String
