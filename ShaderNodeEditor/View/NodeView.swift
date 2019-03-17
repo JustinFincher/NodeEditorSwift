@@ -22,6 +22,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                 }
                 return
             }
+            ports.removeAll()
             inPortsContainer.removeFromSuperview()
             outPortsContainer.removeFromSuperview()
             if data.inPorts.count != 0 || data.outPorts.count != 0
@@ -64,6 +65,24 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                                                                isOutPort: false,
                                                                nodeView: self)
                 inPortsContainer.addSubview(nodePortView)
+                if let pan = pan, let longPress = longPress, let knotPan = nodePortView.panOnKnot
+                {
+                    pan.require(toFail: knotPan)
+                    longPress.require(toFail: knotPan)
+                }
+                ports.insert(nodePortView)
+            }
+            
+            for i in 0..<data.outPorts.count
+            {
+                let nodePortView : NodePortView = NodePortView(frame: CGRect.init(x: 0,
+                                                                                  y: CGFloat(i) * Constant.nodePortHeight,
+                                                                                  width: outPortsContainer.frame.width,
+                                                                                  height: Constant.nodePortHeight),
+                                                               data: data.outPorts[i],
+                                                               isOutPort: true,
+                                                               nodeView: self)
+                outPortsContainer.addSubview(nodePortView)
                 if let pan = pan, let longPress = longPress, let knotPan = nodePortView.panOnKnot
                 {
                     pan.require(toFail: knotPan)

@@ -108,7 +108,22 @@ public enum NodeType
     
     func shaderCommentHeader() -> String
     {
-        return "\n// \(type(of: self)) Index \(index)"
+        return "\n// \(type(of: self)) Index \(index)\n"
+    }
+    
+    func declareInPortsExpression() -> Void
+    {
+        var expression = ""
+        inPorts.forEach { (data) in
+            if data.connections.count > 0, let first = data.connections.first
+            {
+                expression.append(first.expressionRule())
+            }else
+            {
+                expression.append(data.getPortDefaultValueExpression())
+            }
+            expression.append("\n")
+        }
     }
     
     func breakAllConnections(clearPorts: Bool) -> Void

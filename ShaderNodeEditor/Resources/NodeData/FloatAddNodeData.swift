@@ -25,4 +25,23 @@ import UIKit
         return [
             FloatNodePortData(title: "C")
         ] }
+    
+    // single node shader block, need to override
+    override func singleNodeExpressionRule() -> String
+    {
+        let result : String =
+        """
+        \(shaderCommentHeader())
+        \(declareInPortsExpression())
+        float \(outPorts[0].getPortVariableName()) = \(inPorts[0].getPortVariableName()) + \(inPorts[1].getPortVariableName())
+        """
+         return result
+    }
+    
+    // preview shader expression gl_FragColor only, need to override
+    override func shaderFinalColorExperssion() -> String
+    {
+        let zero : Float = 0;
+        return String(format: "gl_FragColor = vec4(%.8f,%.8f,%.8f,%.8f);",zero,zero,zero,zero)
+    }
 }
