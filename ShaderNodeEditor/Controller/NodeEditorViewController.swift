@@ -19,6 +19,8 @@ public class NodeEditorViewController: UIViewController, NodeListTableViewContro
     {
         super.viewDidLoad()
         
+        AudioUniformProviderManager.shared.requestPermission()
+        
         loadingIndicator.frame = CGRect.init(origin: CGPoint.init(x:
             (self.view.frame.size.width - loadingIndicator.frame.size.width)/2.0, y:
             (self.view.frame.size.height - loadingIndicator.frame.size.height)/2.0), size: loadingIndicator.frame.size)

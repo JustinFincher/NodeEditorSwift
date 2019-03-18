@@ -129,7 +129,9 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                     scene.anchorPoint = CGPoint.init(x: 0.5, y: 0.5)
                     scene.scaleMode = .fill
                     let shaderNode : SKSpriteNode = SKSpriteNode(color: UIColor.black, size: scene.size)
-                    shaderNode.shader = SKShader(source: data.previewShaderExperssion())
+                    let shader : SKShader = SKShader(source: data.previewShaderExperssion(),
+                                                     uniforms: [AudioUniformProviderManager.shared.audioUniform])
+                    shaderNode.shader = shader
                     scene.addChild(shaderNode)
                     previewView.presentScene(scene)
                     visualEffectView.contentView.addSubview(previewView)

@@ -63,14 +63,9 @@ public class NodePortView: UIView
     
     class func getSelfFromKnot(knot: NodePortKnotView) -> NodePortView?
     {
-        weak var view : UIView? = knot
-        while view != nil, !view!.isKind(of: NodePortView.self)
+        if let view : NodePortView = knot.getSuperView(typeClass: NodePortView.self) as? NodePortView
         {
-            view = view!.superview
-        }
-        if view != nil && view!.isKind(of: NodePortView.self)
-        {
-            return view as? NodePortView
+            return view
         }
         return nil
     }

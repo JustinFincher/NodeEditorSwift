@@ -113,7 +113,7 @@ public class NodeGraphContainerView: UIView
         }
     }
     
-    @objc func handleKnotPan(recognizer : UILongPressGestureRecognizer) -> Void
+    @objc func handleKnotPan(recognizer : UIPanGestureRecognizer) -> Void
     {
         if let view = recognizer.view,
             view.isKind(of: NodePortKnotView.self),

@@ -21,6 +21,9 @@
 		0D064AF8223FE2C900B3314E /* Vec4ChannelCombineNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AF7223FE2C900B3314E /* Vec4ChannelCombineNodeData.swift */; };
 		0D064AFA223FE3D800B3314E /* Vec2GeneratorNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AF9223FE3D800B3314E /* Vec2GeneratorNodeData.swift */; };
 		0D064AFC223FE62200B3314E /* NodeValueCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AFB223FE62200B3314E /* NodeValueCustomView.swift */; };
+		0D064AFE223FE97E00B3314E /* AxisRulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AFD223FE97E00B3314E /* AxisRulerView.swift */; };
+		0D064B01223FF7EC00B3314E /* AudioUniformProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064B00223FF7EC00B3314E /* AudioUniformProviderManager.swift */; };
+		0D064B03224000AC00B3314E /* FloatAudioDBNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064B02224000AC00B3314E /* FloatAudioDBNodeData.swift */; };
 		0D16EF872236211600EDA588 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D16EF862236211600EDA588 /* AppDelegate.swift */; };
 		0D16EF892236211600EDA588 /* NodeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D16EF882236211600EDA588 /* NodeEditorViewController.swift */; };
 		0D16EF8C2236211600EDA588 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D16EF8A2236211600EDA588 /* Main.storyboard */; };
@@ -64,6 +67,9 @@
 		0D064AF7223FE2C900B3314E /* Vec4ChannelCombineNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vec4ChannelCombineNodeData.swift; sourceTree = "<group>"; };
 		0D064AF9223FE3D800B3314E /* Vec2GeneratorNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vec2GeneratorNodeData.swift; sourceTree = "<group>"; };
 		0D064AFB223FE62200B3314E /* NodeValueCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeValueCustomView.swift; sourceTree = "<group>"; };
+		0D064AFD223FE97E00B3314E /* AxisRulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AxisRulerView.swift; sourceTree = "<group>"; };
+		0D064B00223FF7EC00B3314E /* AudioUniformProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioUniformProviderManager.swift; sourceTree = "<group>"; };
+		0D064B02224000AC00B3314E /* FloatAudioDBNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatAudioDBNodeData.swift; sourceTree = "<group>"; };
 		0D16EF832236211600EDA588 /* ShaderNodeEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShaderNodeEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D16EF862236211600EDA588 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D16EF882236211600EDA588 /* NodeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeEditorViewController.swift; sourceTree = "<group>"; };
@@ -105,6 +111,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0D064AFF223FE9A200B3314E /* NodeValueView */ = {
+			isa = PBXGroup;
+			children = (
+				0D064AFD223FE97E00B3314E /* AxisRulerView.swift */,
+			);
+			path = NodeValueView;
+			sourceTree = "<group>";
+		};
 		0D16EF7A2236211600EDA588 = {
 			isa = PBXGroup;
 			children = (
@@ -150,6 +164,7 @@
 		0DA91956223C067F004A95AF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0D064AFF223FE9A200B3314E /* NodeValueView */,
 				0DA91957223C0688004A95AF /* NodeData */,
 				0DEE53B1223E958100031407 /* DataType */,
 				0DEE53B4223E962200031407 /* NodePortData */,
@@ -169,6 +184,7 @@
 				0D064AF9223FE3D800B3314E /* Vec2GeneratorNodeData.swift */,
 				0D064AF5223FE1F900B3314E /* Vec2ChannelSplitNodeData.swift */,
 				0D064AF7223FE2C900B3314E /* Vec4ChannelCombineNodeData.swift */,
+				0D064B02224000AC00B3314E /* FloatAudioDBNodeData.swift */,
 			);
 			path = NodeData;
 			sourceTree = "<group>";
@@ -207,6 +223,7 @@
 				0D32EC022237FB2300500C9B /* Dynamic.swift */,
 				0DA91952223C05C8004A95AF /* Extensions.swift */,
 				0DEE53AD223E834700031407 /* NodeInfoCacheManager.swift */,
+				0D064B00223FF7EC00B3314E /* AudioUniformProviderManager.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -314,6 +331,7 @@
 				0DA9194D223BF847004A95AF /* NodePortView.swift in Sources */,
 				0D064AFC223FE62200B3314E /* NodeValueCustomView.swift in Sources */,
 				0DA9194B223BEDD4004A95AF /* NodeGraphScrollView.swift in Sources */,
+				0D064B01223FF7EC00B3314E /* AudioUniformProviderManager.swift in Sources */,
 				0D064AEC223FB8EB00B3314E /* Vec4NodePortData.swift in Sources */,
 				0DA91951223C01FC004A95AF /* NodeListTableViewController.swift in Sources */,
 				0D064AF4223FBC3A00B3314E /* Vec2TexCoordNodeData.swift in Sources */,
@@ -322,6 +340,7 @@
 				0D32EC052238165100500C9B /* ShaderDataType.swift in Sources */,
 				0DB0DF512237E47900880FE9 /* NodeView.swift in Sources */,
 				0DEE53B0223E957D00031407 /* ShaderFloatType.swift in Sources */,
+				0D064AFE223FE97E00B3314E /* AxisRulerView.swift in Sources */,
 				0DEE53AE223E834700031407 /* NodeInfoCacheManager.swift in Sources */,
 				0DB0DF492237DF3400880FE9 /* NodeGraphContainerView.swift in Sources */,
 				0D064AE4223FB87B00B3314E /* ShaderVec3Type.swift in Sources */,
@@ -329,6 +348,7 @@
 				0D064AF2223FBA6100B3314E /* FloatSinNodeData.swift in Sources */,
 				0DA91949223BDE57004A95AF /* Constant.swift in Sources */,
 				0D16EF892236211600EDA588 /* NodeEditorViewController.swift in Sources */,
+				0D064B03224000AC00B3314E /* FloatAudioDBNodeData.swift in Sources */,
 				0DB0DF4B2237DF4500880FE9 /* NodeGraphDrawRectView.swift in Sources */,
 				0DA91959223C203A004A95AF /* FloatAddNodeData.swift in Sources */,
 				0D064AE2223FB87400B3314E /* ShaderVec2Type.swift in Sources */,

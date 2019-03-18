@@ -9,6 +9,32 @@
 import Foundation
 import UIKit
 
+extension FileManager
+{
+    func createTemporaryDirectory() throws -> URL {
+        let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
+        try createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+        return url
+    }
+}
+
+public extension UIView
+{
+    public func getSuperView(typeClass: AnyClass) -> UIView?
+    {
+        weak var view : UIView? = self
+        while view != nil, !view!.isKind(of: typeClass)
+        {
+            view = view!.superview
+        }
+        if view != nil && view!.isKind(of: typeClass)
+        {
+            return view
+        }
+        return nil
+    }
+}
+
 public extension CGRect
 {
     public func center() -> CGPoint

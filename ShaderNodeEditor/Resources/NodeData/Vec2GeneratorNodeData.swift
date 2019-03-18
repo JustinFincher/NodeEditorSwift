@@ -10,8 +10,7 @@ import UIKit
 
 class Vec2GeneratorNodeData: NodeData
 {
-    var xValue : Dynamic<Float> = Dynamic<Float>(0)
-    var yValue : Dynamic<Float> = Dynamic<Float>(0)
+    var value : Dynamic<CGPoint> = Dynamic<CGPoint>(CGPoint.zero)
     
     override class var defaultTitle: String { return "Vec2 Generator (vec2(x,y))" }
     override class var customViewHeight: CGFloat { return 200 }
@@ -35,7 +34,7 @@ class Vec2GeneratorNodeData: NodeData
         """
         \(shaderCommentHeader())
         \(declareInPortsExpression())
-        \(outPorts[0].requiredType.defaultCGType) \(outPorts[0].getPortVariableName()) = vec2(\(xValue.value),\(yValue.value));
+        \(outPorts[0].requiredType.defaultCGType) \(outPorts[0].getPortVariableName()) = vec2(\(value.value.x),\(value.value.y));
         """
         return result
     }
@@ -48,6 +47,14 @@ class Vec2GeneratorNodeData: NodeData
     
     override func setupCustomView(view: UIView)
     {
-        
+        value.bind { (newValue) in
+            NotificationCenter.default.post(name: NSNotification.Name( Constant.notificationNameShaderModified), object: nil)
+        }
+        let axisView : AxisRulerView = AxisRulerView(frame: view.bounds)
+        axisView.value = value.value
+        view.addSubview(axisView)
+        axisView.valueChangedHandler =  { (point) -> () in
+            self.value.value = point
+        }
     }
 }

@@ -57,8 +57,7 @@ class NodeGraphScrollView: UIScrollView, UIScrollViewDelegate, UIGestureRecogniz
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         if let touchView = touch.view,
-            touchView.isKind(of: NodeValueCustomView.self),
-            let customValueView = touchView as? NodeValueCustomView,
+            let customValueView : NodeValueCustomView = touchView.getSuperView(typeClass: NodeValueCustomView.self) as? NodeValueCustomView,
             let nodeView = customValueView.nodeView,
             let data = nodeView.data,
             data.isSelected
