@@ -15,7 +15,7 @@ public class NodeGraphDrawRectView: UIView, NodeGraphContainerViewDataSource
     
     var dragging : Bool = false
     var position : CGPoint = CGPoint.zero
-    var draggingRelatedPortView : NodePortView? = nil
+    weak var draggingRelatedPortView : NodePortView? = nil
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -46,7 +46,7 @@ public class NodeGraphDrawRectView: UIView, NodeGraphContainerViewDataSource
             return
         }
         var lineColor : UIColor = UIColor.white
-        if let draggingRelatedPortView : NodePortView = self.draggingRelatedPortView,
+        if let draggingRelatedPortView : NodePortView = draggingRelatedPortView,
             let dragginRelativePortData : NodePortData = draggingRelatedPortView.data,
             dragging
         {
@@ -106,7 +106,7 @@ public class NodeGraphDrawRectView: UIView, NodeGraphContainerViewDataSource
     {
         self.dragging = dragging
         self.position = point
-        self.draggingRelatedPortView = fromNode
+        draggingRelatedPortView = fromNode
         setNeedsDisplay()
     }
 }

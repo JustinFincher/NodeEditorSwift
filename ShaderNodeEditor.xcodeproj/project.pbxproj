@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D064AE2223FB87400B3314E /* ShaderVec2Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AE1223FB87300B3314E /* ShaderVec2Type.swift */; };
+		0D064AE4223FB87B00B3314E /* ShaderVec3Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AE3223FB87B00B3314E /* ShaderVec3Type.swift */; };
+		0D064AE6223FB88600B3314E /* ShaderVec4Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AE5223FB88600B3314E /* ShaderVec4Type.swift */; };
+		0D064AE8223FB8DE00B3314E /* Vec2NodePortData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AE7223FB8DE00B3314E /* Vec2NodePortData.swift */; };
+		0D064AEA223FB8E500B3314E /* Vec3NodePortData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AE9223FB8E500B3314E /* Vec3NodePortData.swift */; };
+		0D064AEC223FB8EB00B3314E /* Vec4NodePortData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AEB223FB8EB00B3314E /* Vec4NodePortData.swift */; };
+		0D064AEE223FB95800B3314E /* FloatMultiplyNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AED223FB95800B3314E /* FloatMultiplyNodeData.swift */; };
+		0D064AF0223FB99D00B3314E /* FloatTimeNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AEF223FB99D00B3314E /* FloatTimeNodeData.swift */; };
+		0D064AF2223FBA6100B3314E /* FloatSinNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AF1223FBA6100B3314E /* FloatSinNodeData.swift */; };
+		0D064AF4223FBC3A00B3314E /* Vec2TexCoordNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AF3223FBC3A00B3314E /* Vec2TexCoordNodeData.swift */; };
+		0D064AF6223FE1F900B3314E /* Vec2ChannelSplitNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AF5223FE1F900B3314E /* Vec2ChannelSplitNodeData.swift */; };
+		0D064AF8223FE2C900B3314E /* Vec4ChannelCombineNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AF7223FE2C900B3314E /* Vec4ChannelCombineNodeData.swift */; };
+		0D064AFA223FE3D800B3314E /* Vec2GeneratorNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AF9223FE3D800B3314E /* Vec2GeneratorNodeData.swift */; };
+		0D064AFC223FE62200B3314E /* NodeValueCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D064AFB223FE62200B3314E /* NodeValueCustomView.swift */; };
 		0D16EF872236211600EDA588 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D16EF862236211600EDA588 /* AppDelegate.swift */; };
 		0D16EF892236211600EDA588 /* NodeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D16EF882236211600EDA588 /* NodeEditorViewController.swift */; };
 		0D16EF8C2236211600EDA588 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D16EF8A2236211600EDA588 /* Main.storyboard */; };
@@ -20,7 +34,7 @@
 		0DA9194F223BF856004A95AF /* NodePortKnotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9194E223BF856004A95AF /* NodePortKnotView.swift */; };
 		0DA91951223C01FC004A95AF /* NodeListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA91950223C01FC004A95AF /* NodeListTableViewController.swift */; };
 		0DA91953223C05C8004A95AF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA91952223C05C8004A95AF /* Extensions.swift */; };
-		0DA91955223C067B004A95AF /* FloatNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA91954223C067B004A95AF /* FloatNodeData.swift */; };
+		0DA91955223C067B004A95AF /* FloatGeneratorNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA91954223C067B004A95AF /* FloatGeneratorNodeData.swift */; };
 		0DA91959223C203A004A95AF /* FloatAddNodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA91958223C203A004A95AF /* FloatAddNodeData.swift */; };
 		0DB0DF472237DF2500880FE9 /* NodeGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0DF462237DF2500880FE9 /* NodeGraphView.swift */; };
 		0DB0DF492237DF3400880FE9 /* NodeGraphContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0DF482237DF3400880FE9 /* NodeGraphContainerView.swift */; };
@@ -36,6 +50,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D064AE1223FB87300B3314E /* ShaderVec2Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderVec2Type.swift; sourceTree = "<group>"; };
+		0D064AE3223FB87B00B3314E /* ShaderVec3Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderVec3Type.swift; sourceTree = "<group>"; };
+		0D064AE5223FB88600B3314E /* ShaderVec4Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderVec4Type.swift; sourceTree = "<group>"; };
+		0D064AE7223FB8DE00B3314E /* Vec2NodePortData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vec2NodePortData.swift; sourceTree = "<group>"; };
+		0D064AE9223FB8E500B3314E /* Vec3NodePortData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vec3NodePortData.swift; sourceTree = "<group>"; };
+		0D064AEB223FB8EB00B3314E /* Vec4NodePortData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vec4NodePortData.swift; sourceTree = "<group>"; };
+		0D064AED223FB95800B3314E /* FloatMultiplyNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatMultiplyNodeData.swift; sourceTree = "<group>"; };
+		0D064AEF223FB99D00B3314E /* FloatTimeNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatTimeNodeData.swift; sourceTree = "<group>"; };
+		0D064AF1223FBA6100B3314E /* FloatSinNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatSinNodeData.swift; sourceTree = "<group>"; };
+		0D064AF3223FBC3A00B3314E /* Vec2TexCoordNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vec2TexCoordNodeData.swift; sourceTree = "<group>"; };
+		0D064AF5223FE1F900B3314E /* Vec2ChannelSplitNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vec2ChannelSplitNodeData.swift; sourceTree = "<group>"; };
+		0D064AF7223FE2C900B3314E /* Vec4ChannelCombineNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vec4ChannelCombineNodeData.swift; sourceTree = "<group>"; };
+		0D064AF9223FE3D800B3314E /* Vec2GeneratorNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vec2GeneratorNodeData.swift; sourceTree = "<group>"; };
+		0D064AFB223FE62200B3314E /* NodeValueCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeValueCustomView.swift; sourceTree = "<group>"; };
 		0D16EF832236211600EDA588 /* ShaderNodeEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShaderNodeEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D16EF862236211600EDA588 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D16EF882236211600EDA588 /* NodeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeEditorViewController.swift; sourceTree = "<group>"; };
@@ -51,7 +79,7 @@
 		0DA9194E223BF856004A95AF /* NodePortKnotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePortKnotView.swift; sourceTree = "<group>"; };
 		0DA91950223C01FC004A95AF /* NodeListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeListTableViewController.swift; sourceTree = "<group>"; };
 		0DA91952223C05C8004A95AF /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		0DA91954223C067B004A95AF /* FloatNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatNodeData.swift; sourceTree = "<group>"; };
+		0DA91954223C067B004A95AF /* FloatGeneratorNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatGeneratorNodeData.swift; sourceTree = "<group>"; };
 		0DA91958223C203A004A95AF /* FloatAddNodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatAddNodeData.swift; sourceTree = "<group>"; };
 		0DB0DF462237DF2500880FE9 /* NodeGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeGraphView.swift; sourceTree = "<group>"; };
 		0DB0DF482237DF3400880FE9 /* NodeGraphContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeGraphContainerView.swift; sourceTree = "<group>"; };
@@ -132,8 +160,15 @@
 		0DA91957223C0688004A95AF /* NodeData */ = {
 			isa = PBXGroup;
 			children = (
-				0DA91954223C067B004A95AF /* FloatNodeData.swift */,
+				0DA91954223C067B004A95AF /* FloatGeneratorNodeData.swift */,
 				0DA91958223C203A004A95AF /* FloatAddNodeData.swift */,
+				0D064AED223FB95800B3314E /* FloatMultiplyNodeData.swift */,
+				0D064AEF223FB99D00B3314E /* FloatTimeNodeData.swift */,
+				0D064AF1223FBA6100B3314E /* FloatSinNodeData.swift */,
+				0D064AF3223FBC3A00B3314E /* Vec2TexCoordNodeData.swift */,
+				0D064AF9223FE3D800B3314E /* Vec2GeneratorNodeData.swift */,
+				0D064AF5223FE1F900B3314E /* Vec2ChannelSplitNodeData.swift */,
+				0D064AF7223FE2C900B3314E /* Vec4ChannelCombineNodeData.swift */,
 			);
 			path = NodeData;
 			sourceTree = "<group>";
@@ -160,6 +195,7 @@
 				0DB0DF502237E47900880FE9 /* NodeView.swift */,
 				0DA9194C223BF847004A95AF /* NodePortView.swift */,
 				0DA9194E223BF856004A95AF /* NodePortKnotView.swift */,
+				0D064AFB223FE62200B3314E /* NodeValueCustomView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -179,6 +215,9 @@
 			isa = PBXGroup;
 			children = (
 				0DEE53AF223E957D00031407 /* ShaderFloatType.swift */,
+				0D064AE1223FB87300B3314E /* ShaderVec2Type.swift */,
+				0D064AE3223FB87B00B3314E /* ShaderVec3Type.swift */,
+				0D064AE5223FB88600B3314E /* ShaderVec4Type.swift */,
 			);
 			path = DataType;
 			sourceTree = "<group>";
@@ -187,6 +226,9 @@
 			isa = PBXGroup;
 			children = (
 				0DEE53B2223E961E00031407 /* FloatNodePortData.swift */,
+				0D064AE7223FB8DE00B3314E /* Vec2NodePortData.swift */,
+				0D064AE9223FB8E500B3314E /* Vec3NodePortData.swift */,
+				0D064AEB223FB8EB00B3314E /* Vec4NodePortData.swift */,
 			);
 			path = NodePortData;
 			sourceTree = "<group>";
@@ -263,28 +305,42 @@
 			buildActionMask = 2147483647;
 			files = (
 				0DB0DF4F2237E35700880FE9 /* NodeGraphData.swift in Sources */,
+				0D064AFA223FE3D800B3314E /* Vec2GeneratorNodeData.swift in Sources */,
+				0D064AE8223FB8DE00B3314E /* Vec2NodePortData.swift in Sources */,
 				0DA91953223C05C8004A95AF /* Extensions.swift in Sources */,
+				0D064AEA223FB8E500B3314E /* Vec3NodePortData.swift in Sources */,
+				0D064AE6223FB88600B3314E /* ShaderVec4Type.swift in Sources */,
 				0DB0DF472237DF2500880FE9 /* NodeGraphView.swift in Sources */,
 				0DA9194D223BF847004A95AF /* NodePortView.swift in Sources */,
+				0D064AFC223FE62200B3314E /* NodeValueCustomView.swift in Sources */,
 				0DA9194B223BEDD4004A95AF /* NodeGraphScrollView.swift in Sources */,
+				0D064AEC223FB8EB00B3314E /* Vec4NodePortData.swift in Sources */,
 				0DA91951223C01FC004A95AF /* NodeListTableViewController.swift in Sources */,
+				0D064AF4223FBC3A00B3314E /* Vec2TexCoordNodeData.swift in Sources */,
 				0DB0DF552237E9EF00880FE9 /* NodeConnectionData.swift in Sources */,
+				0D064AF8223FE2C900B3314E /* Vec4ChannelCombineNodeData.swift in Sources */,
 				0D32EC052238165100500C9B /* ShaderDataType.swift in Sources */,
 				0DB0DF512237E47900880FE9 /* NodeView.swift in Sources */,
 				0DEE53B0223E957D00031407 /* ShaderFloatType.swift in Sources */,
 				0DEE53AE223E834700031407 /* NodeInfoCacheManager.swift in Sources */,
 				0DB0DF492237DF3400880FE9 /* NodeGraphContainerView.swift in Sources */,
+				0D064AE4223FB87B00B3314E /* ShaderVec3Type.swift in Sources */,
+				0D064AF6223FE1F900B3314E /* Vec2ChannelSplitNodeData.swift in Sources */,
+				0D064AF2223FBA6100B3314E /* FloatSinNodeData.swift in Sources */,
 				0DA91949223BDE57004A95AF /* Constant.swift in Sources */,
 				0D16EF892236211600EDA588 /* NodeEditorViewController.swift in Sources */,
 				0DB0DF4B2237DF4500880FE9 /* NodeGraphDrawRectView.swift in Sources */,
 				0DA91959223C203A004A95AF /* FloatAddNodeData.swift in Sources */,
+				0D064AE2223FB87400B3314E /* ShaderVec2Type.swift in Sources */,
 				0DA9194F223BF856004A95AF /* NodePortKnotView.swift in Sources */,
 				0DEE53B3223E961E00031407 /* FloatNodePortData.swift in Sources */,
 				0D32EC032237FB2300500C9B /* Dynamic.swift in Sources */,
 				0DB0DF532237E9E500880FE9 /* NodePortData.swift in Sources */,
+				0D064AF0223FB99D00B3314E /* FloatTimeNodeData.swift in Sources */,
+				0D064AEE223FB95800B3314E /* FloatMultiplyNodeData.swift in Sources */,
 				0D16EF872236211600EDA588 /* AppDelegate.swift in Sources */,
 				0DB0DF4D2237E34D00880FE9 /* NodeData.swift in Sources */,
-				0DA91955223C067B004A95AF /* FloatNodeData.swift in Sources */,
+				0DA91955223C067B004A95AF /* FloatGeneratorNodeData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

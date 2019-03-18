@@ -1,29 +1,31 @@
 //
-//  AddNodeData.swift
+//  Vec4ColorNodeData.swift
 //  ShaderNodeEditor
 //
-//  Created by Justin Fincher on 16/3/2019.
+//  Created by Justin Fincher on 18/3/2019.
 //  Copyright © 2019 ZHENG HAOTIAN. All rights reserved.
 //
 
 import UIKit
 
-@objc public class FloatAddNodeData: NodeData
+class Vec4ChannelCombineNodeData: NodeData
 {
-    override class var defaultTitle: String { return "Float Add (float c = a + b)" }
+    override class var defaultTitle: String { return "Vec4 Combine (vec4 c = vec4(r,g,b,a))" }
     override class var defaultCanHavePreview: Bool { return true }
     override class var defaultPreviewOutportIndex: Int { return 0 }
     override class var defaultInPorts: Array<NodePortData>
     {
         return [
-            FloatNodePortData(title: "A"),
-            FloatNodePortData(title: "B")
+            FloatNodePortData(title: "R"),
+            FloatNodePortData(title: "G"),
+            FloatNodePortData(title: "B"),
+            FloatNodePortData(title: "A")
         ]
     }
     override class var defaultOutPorts: Array<NodePortData>
     {
         return [
-            FloatNodePortData(title: "C")
+            Vec4NodePortData(title: "Color")
         ] }
     
     // single node shader block, need to override
@@ -33,14 +35,14 @@ import UIKit
         """
         \(shaderCommentHeader())
         \(declareInPortsExpression())
-        \(outPorts[0].requiredType.defaultCGType) \(outPorts[0].getPortVariableName()) = \(inPorts[0].getPortVariableName()) + \(inPorts[1].getPortVariableName());
+        \(outPorts[0].requiredType.defaultCGType) \(outPorts[0].getPortVariableName()) = vec4(\(inPorts[0].getPortVariableName()),\(inPorts[1].getPortVariableName()),\(inPorts[2].getPortVariableName()),\(inPorts[3].getPortVariableName()));
         """
-         return result
+        return result
     }
     
     // preview shader expression gl_FragColor only, need to override
     override func shaderFinalColorExperssion() -> String
     {
-        return String(format: "gl_FragColor = vec4(\(outPorts[0].getPortVariableName()),\(outPorts[0].getPortVariableName()),\(outPorts[0].getPortVariableName()),1.0);")
+        return String(format: "gl_FragColor = \(outPorts[0].getPortVariableName());")
     }
 }

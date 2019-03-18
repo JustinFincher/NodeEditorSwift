@@ -87,9 +87,10 @@ public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
     
     public func nodeMoved(nodeGraphContainerView: NodeGraphContainerView)
     {
-        if nodeGraphContainerView == self.containerView
+        if let drawRectView = drawRectView,
+            nodeGraphContainerView == self.containerView
         {
-            self.drawRectView!.setNeedsDisplay()
+            drawRectView.setNeedsDisplay()
         }
     }
     

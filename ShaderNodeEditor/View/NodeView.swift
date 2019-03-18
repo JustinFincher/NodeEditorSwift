@@ -112,20 +112,31 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             visualEffectView.contentView.addSubview(inPortsContainer)
             visualEffectView.contentView.addSubview(outPortsContainer)
             
-            previewView.removeFromSuperview()
-            if data.hasPreview
+            if let previewView = previewView
             {
-                previewView.frame = CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
-                                                                     y: self.frame.size.height - self.frame.size.width + Constant.nodePadding),
-                                                size: CGSize.init(width: self.frame.size.width - Constant.nodePadding * 2,
-                                                                  height: self.frame.size.width - Constant.nodePadding * 2))
-                let scene : SKScene = SKScene(size: previewView.frame.size)
-                scene.anchorPoint = CGPoint.init(x: 0.5, y: 0.5)
-                let shaderNode : SKSpriteNode = SKSpriteNode(color: UIColor.black, size: scene.size)
-                shaderNode.shader = SKShader(source: data.previewShaderExperssion())
-                scene.addChild(shaderNode)
-                previewView.presentScene(scene)
-                visualEffectView.contentView.addSubview(previewView)
+                previewView.scene?.removeAllChildren()
+                previewView.presentScene(nil)
+                previewView.removeFromSuperview()
+            }else if data.hasPreview
+            {
+                previewView = SKView(frame: CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
+                                                                             y: self.frame.size.height - self.frame.size.width + Constant.nodePadding),
+                                                        size: CGSize.init(width: self.frame.size.width - Constant.nodePadding * 2,
+                                                                          height: self.frame.size.width - Constant.nodePadding * 2)))
+                if let previewView = previewView
+                {
+                    let scene : SKScene = SKScene(size: CGSize.init(width: previewView.frame.size.width / 64.0, height: previewView.frame.size.height / 64.0))
+                    scene.anchorPoint = CGPoint.init(x: 0.5, y: 0.5)
+                    scene.scaleMode = .fill
+                    let shaderNode : SKSpriteNode = SKSpriteNode(color: UIColor.black, size: scene.size)
+                    shaderNode.shader = SKShader(source: data.previewShaderExperssion())
+                    scene.addChild(shaderNode)
+                    previewView.presentScene(scene)
+                    visualEffectView.contentView.addSubview(previewView)
+                    previewView.layer.cornerRadius = 8
+                    previewView.layer.masksToBounds = true
+                    previewView.showsFPS = true
+                }
             }
         }
     }
@@ -134,8 +145,8 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
     var attachmentBehavior : UIAttachmentBehavior?
     var pushBehavior : UIPushBehavior?
     var ports : Set<NodePortView> = []
-    let previewView : SKView = SKView(frame: CGRect.zero)
-    let customView : UIView = UIView(frame: CGRect.zero)
+    var previewView : SKView?
+    let customView : NodeValueCustomView = NodeValueCustomView(frame: CGRect.zero)
     
     
     var tap: UITapGestureRecognizer?
@@ -213,10 +224,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         outPortsContainer.layer.cornerRadius = 4;
         outPortsContainer.layer.masksToBounds = true
         
-        previewView.layer.cornerRadius = 8
-        previewView.layer.masksToBounds = true
-        previewView.showsFPS = true
-        
+        customView.nodeView = self
         customView.layer.masksToBounds = true
         customView.layer.cornerRadius = 8
         customView.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
@@ -225,21 +233,37 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
     func makeSelected() -> Void
     {
         graphContainerView?.bringSubviewToFront(self)
-        nodeViewSelectedHandler?()
+        if let nodeViewSelectedHandler = nodeViewSelectedHandler {
+            nodeViewSelectedHandler()
+        }
         self.becomeFirstResponder()
     }
     
     func updateNode() -> Void
     {
-        data?.frame = self.frame
-        self.visualEffectView.layer.borderColor = data?.isSelected ?? false ? UIColor.orange.withAlphaComponent(0.6).cgColor : UIColor.clear.cgColor
-        self.visualEffectView.layer.borderWidth = data?.isSelected ?? false ? 4 : 0
-        self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
+        if let data = data
+        {
+            data.frame = self.frame
+            self.visualEffectView.layer.borderColor = data.isSelected ? UIColor.orange.withAlphaComponent(0.6).cgColor : UIColor.clear.cgColor
+            self.visualEffectView.layer.borderWidth = data.isSelected ? 4 : 0
+            self.customView.layer.borderColor = data.isSelected ? UIColor.black.withAlphaComponent(0.3).cgColor : UIColor.clear.cgColor
+            self.customView.layer.borderWidth = data.isSelected ? 4 : 0
+        }
     }
     
     // MARK: - UIGestureRecognizerDelegate
     
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if let touchView : UIView = touch.view,
+            let nodeData = data,
+            nodeData.isSelected
+        {
+           return !touchView.isDescendant(of: customView)
+        }
         return true
     }
     
@@ -258,9 +282,9 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         }
         scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
             self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleZoomed, y: Constant.nodeScaleZoomed)
-            self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
         })
-        scaleAnimator?.addAnimations({
+        scaleAnimator?.addAnimations({ [weak self]  in
+            guard let self = self else { return }
             self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleNormal, y: Constant.nodeScaleNormal)
             self.markNodeMoved()
         }, delayFactor: 0.5)
@@ -284,9 +308,9 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                 self.graphContainerView?.dynamicAnimator?.removeBehavior(pushBehavior)
             }
             scaleAnimator?.stopAnimation(true)
-            scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
+            scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: { [weak self]  in
+                guard let self = self else { return }
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleZoomed, y: Constant.nodeScaleZoomed)
-                self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
                 self.markNodeMoved()
             })
             scaleAnimator?.startAnimation()
@@ -296,9 +320,9 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             break
         case .ended:
             scaleAnimator?.stopAnimation(true)
-            scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
+            scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: { [weak self]  in
+                guard let self = self else { return }
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleNormal, y: Constant.nodeScaleNormal)
-                self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
                 self.markNodeMoved()
             })
             scaleAnimator?.startAnimation()
@@ -321,14 +345,14 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                 self.graphContainerView?.dynamicAnimator?.removeBehavior(pushBehavior)
             }
             scaleAnimator?.stopAnimation(true)
-            scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
+            scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: { [weak self]  in
+                guard let self = self else { return }
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleZoomed, y: Constant.nodeScaleZoomed)
-                self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
                 self.markNodeMoved()
             })
-            scaleAnimator?.addCompletion({ (finalPosition) in
+            scaleAnimator?.addCompletion({ [weak self]  (finalPosition) in
+                guard let self = self else { return }
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleZoomed, y: Constant.nodeScaleZoomed)
-                self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
                 self.markNodeMoved()
             })
             scaleAnimator?.startAnimation()
@@ -341,7 +365,8 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                                                       offsetFromCenter: UIOffset.init(horizontal: locationInSelf.x - self.bounds.size.width / 2.0,
                                                                                       vertical: locationInSelf.y - self.bounds.size.height / 2.0),
                                                       attachedToAnchor: recognizer.location(in: self.graphContainerView))
-            attachmentBehavior?.action = {
+            attachmentBehavior?.action = { [weak self] in
+                guard let self = self else { return }
                 self.updateNode()
                 self.transform = self.transform.scaledBy(x: Constant.nodeScaleZoomed, y: Constant.nodeScaleZoomed)
                 self.markNodeMoved()
@@ -365,14 +390,14 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                 graphContainerView?.dynamicAnimator?.removeBehavior(attachmentBehavior)
             }
             scaleAnimator?.stopAnimation(true)
-            scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
+            scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: { [weak self] in
+                guard let self = self else { return }
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleNormal, y: Constant.nodeScaleNormal)
-                self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
                 self.markNodeMoved()
             })
-            scaleAnimator?.addCompletion({ (finalPosition) in
+            scaleAnimator?.addCompletion({  [weak self]  (finalPosition) in
+                guard let self = self else { return }
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleNormal, y: Constant.nodeScaleNormal)
-                self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
                 self.markNodeMoved()
             })
             scaleAnimator?.startAnimation()
@@ -384,7 +409,8 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             pushBehavior = UIPushBehavior(items: [self], mode: .instantaneous)
             if let pushBehavior = pushBehavior
             {
-                pushBehavior.action = {
+                pushBehavior.action = { [weak self] in
+                    guard let self = self else { return }
                     self.updateNode()
                     self.markNodeMoved()
                 }
@@ -398,6 +424,10 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             }
             break
         default:
+            if let attachmentBehavior = attachmentBehavior
+            {
+                graphContainerView?.dynamicAnimator?.removeBehavior(attachmentBehavior)
+            }
             break
         }
     }
@@ -431,8 +461,14 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
     public override func willMove(toSuperview newSuperview: UIView?) {
         if newSuperview == nil
         {
-            previewView.scene?.removeAllChildren()
-            previewView.presentScene(nil)
+            if let attachmentBehavior = attachmentBehavior
+            {
+                graphContainerView?.dynamicAnimator?.removeBehavior(attachmentBehavior)
+            }
+            if let pushBehavior = pushBehavior
+            {
+                self.graphContainerView?.dynamicAnimator?.removeBehavior(pushBehavior)
+            }
             data = nil
             while subviews.count > 0
             {
@@ -440,6 +476,10 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                 view?.removeFromSuperview()
                 view = nil
             }
+            self.gestureRecognizers?.forEach({ [weak self] (gesture) in
+                guard let self = self else { return }
+                self.removeGestureRecognizer(gesture)
+            })
         }
     }
 }

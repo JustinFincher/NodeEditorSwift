@@ -8,11 +8,11 @@
 
 import UIKit
 
-@objc public class FloatNodeData: NodeData, UITextFieldDelegate
+@objc public class FloatGeneratorNodeData: NodeData, UITextFieldDelegate
 {
     var value : Dynamic<Float> = Dynamic<Float>(0)
     
-    override class var defaultTitle: String { return "Number (float a)" }
+    override class var defaultTitle: String { return "Float Generator (float a)" }
     override class var customViewHeight: CGFloat { return 100 }
     override class var defaultCanHavePreview: Bool { return false }
     override class var defaultPreviewOutportIndex: Int { return -1 }
@@ -34,7 +34,7 @@ import UIKit
         """
         \(shaderCommentHeader())
         \(declareInPortsExpression())
-        float \(outPorts[0].getPortVariableName()) = \(value.value);
+        \(outPorts[0].requiredType.defaultCGType) \(outPorts[0].getPortVariableName()) = \(value.value);
         """
         return result
     }

@@ -63,7 +63,8 @@ public class NodeGraphContainerView: UIView
         dynamicItemBehavior.friction = 1000
         dynamicItemBehavior.elasticity = 0.9
         dynamicItemBehavior.resistance = 0.7
-        dynamicItemBehavior.action = {
+        dynamicItemBehavior.action = { [weak self] in
+            guard let self = self else { return }
             let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
             for view : NodeView in nodeViews
             {
@@ -75,7 +76,8 @@ public class NodeGraphContainerView: UIView
         
         collisionBehavior.collisionMode = .boundaries
         collisionBehavior.translatesReferenceBoundsIntoBoundary = true
-        collisionBehavior.action = {
+        collisionBehavior.action = { [weak self] in
+            guard let self = self else { return }
             let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
             for view : NodeView in nodeViews
             {
@@ -173,6 +175,7 @@ public class NodeGraphContainerView: UIView
         {
             self.collisionBehavior.removeItem(view)
             self.dynamicItemBehavior.removeItem(view)
+            view.nodeViewSelectedHandler = nil
             view.data?.frame = view.frame
             view.removeFromSuperview()
         }
@@ -188,8 +191,10 @@ public class NodeGraphContainerView: UIView
                 // WTF?
                 continue
             }
-            nodeView.nodeViewSelectedHandler = {
-                self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}.forEach({ (eachNodeView) in
+            nodeView.nodeViewSelectedHandler = { [weak self] in
+                guard let self = self else { return }
+                self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}.forEach({ [weak nodeView] (eachNodeView) in
+                    guard let nodeView = nodeView else { return }
                     eachNodeView.data?.isSelected = eachNodeView.data?.index == nodeView.data?.index
                     eachNodeView.updateNode()
                 })

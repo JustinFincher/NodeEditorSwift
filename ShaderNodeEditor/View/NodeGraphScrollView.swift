@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NodeGraphScrollView: UIScrollView, UIScrollViewDelegate
+class NodeGraphScrollView: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDelegate
 {
     var nodeGraphView : NodeGraphView?
     var canvasSize : CGSize = CGSize.zero
@@ -41,10 +41,30 @@ class NodeGraphScrollView: UIScrollView, UIScrollViewDelegate
         self.addSubview(nodeGraphView!)
         self.contentSize = (nodeGraphView?.frame.size)!
         self.delegate = self
+        
+        self.panGestureRecognizer.delegate = self
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView?
     {
         return scrollView == self ? nodeGraphView : nil
+    }
+    
+    // MARK: - UIGestureRecognizerDelegate
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if let touchView = touch.view,
+            touchView.isKind(of: NodeValueCustomView.self),
+            let customValueView = touchView as? NodeValueCustomView,
+            let nodeView = customValueView.nodeView,
+            let data = nodeView.data,
+            data.isSelected
+        {
+            return false
+        }
+        return true
     }
 }

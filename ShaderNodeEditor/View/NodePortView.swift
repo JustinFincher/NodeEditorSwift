@@ -63,12 +63,16 @@ public class NodePortView: UIView
     
     class func getSelfFromKnot(knot: NodePortKnotView) -> NodePortView?
     {
-        var view : UIView = knot
-        while !view.isKind(of: NodePortView.self), let superview = view.superview
+        weak var view : UIView? = knot
+        while view != nil, !view!.isKind(of: NodePortView.self)
         {
-            view = superview
+            view = view!.superview
         }
-        return view.isKind(of: NodePortView.self) ? view as? NodePortView : nil
+        if view != nil && view!.isKind(of: NodePortView.self)
+        {
+            return view as? NodePortView
+        }
+        return nil
     }
     
     func getknotIndicatorPointRelativeToNodeView() -> CGPoint

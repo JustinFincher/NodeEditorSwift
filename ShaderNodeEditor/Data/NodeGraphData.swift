@@ -170,7 +170,7 @@ public class NodeGraphData: NSObject
     {
         let can : Bool = (outPort.isOutPortRelativeToNode() &&
             inPort.isInPortRelativeToNode() &&
-            outPort.connections.count == 0 &&
+            inPort.connections.count == 0 &&
             outPort.node?.index != inPort.node?.index &&
             outPort.requiredType.defaultCGType == inPort.requiredType.defaultCGType)
         

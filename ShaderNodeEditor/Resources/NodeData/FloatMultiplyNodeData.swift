@@ -1,16 +1,16 @@
 //
-//  AddNodeData.swift
+//  FloatMultiplyNodeData.swift
 //  ShaderNodeEditor
 //
-//  Created by Justin Fincher on 16/3/2019.
+//  Created by Justin Fincher on 18/3/2019.
 //  Copyright © 2019 ZHENG HAOTIAN. All rights reserved.
 //
 
 import UIKit
 
-@objc public class FloatAddNodeData: NodeData
+class FloatMultiplyNodeData: NodeData
 {
-    override class var defaultTitle: String { return "Float Add (float c = a + b)" }
+    override class var defaultTitle: String { return "Float Multiply (float c = a * b)" }
     override class var defaultCanHavePreview: Bool { return true }
     override class var defaultPreviewOutportIndex: Int { return 0 }
     override class var defaultInPorts: Array<NodePortData>
@@ -33,9 +33,9 @@ import UIKit
         """
         \(shaderCommentHeader())
         \(declareInPortsExpression())
-        \(outPorts[0].requiredType.defaultCGType) \(outPorts[0].getPortVariableName()) = \(inPorts[0].getPortVariableName()) + \(inPorts[1].getPortVariableName());
+        \(outPorts[0].requiredType.defaultCGType) \(outPorts[0].getPortVariableName()) = \(inPorts[0].getPortVariableName()) * \(inPorts[1].getPortVariableName());
         """
-         return result
+        return result
     }
     
     // preview shader expression gl_FragColor only, need to override
