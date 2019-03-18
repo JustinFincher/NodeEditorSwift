@@ -9,26 +9,30 @@
 import Foundation
 import UIKit
 
-public protocol NodeGraphViewDelegate: AnyObject
-{
-    func nodeGraphView(nodeGraphView: NodeGraphView, frameForNodeWithIndex: String) -> CGRect
-    func nodeGraphView(nodeGraphView: NodeGraphView, didSelectNodeWithIndex: String)
-}
-
-public protocol NodeGraphViewDataSource: AnyObject
-{
-    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
-    func numberOfNodes(in: NodeGraphView) -> Int
-    func delete(node: NodeData) -> Void
-    func requiredViewController() -> NodeEditorViewController
-}
+//public protocol NodeGraphViewDelegate: AnyObject
+//{
+//    func nodeGraphView(nodeGraphView: NodeGraphView, frameForNodeWithIndex: String) -> CGRect
+//    func nodeGraphView(nodeGraphView: NodeGraphView, didSelectNodeWithIndex: String)
+//}
+//
+//public protocol NodeGraphViewDataSource: AnyObject
+//{
+//    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
+//    func numberOfNodes(in: NodeGraphView) -> Int
+//    func canConnectNode(outPort: NodePortData, inPort: NodePortData) -> Bool
+//    func connectNode(outPort: NodePortData, inPort: NodePortData) -> Bool
+//    func canConnectPointIn(outPort: CGPoint, inPort:CGPoint) -> Bool
+//    func delete(node: NodeData) -> Void
+//    func requiredViewController() -> NodeEditorViewController
+//}
 
 public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
 {
     var containerView : NodeGraphContainerView?
     var drawRectView : NodeGraphDrawRectView?
-    weak var delegate: NodeGraphViewDelegate?
-    weak var dataSource: NodeGraphViewDataSource?
+//    weak var delegate: NodeGraphViewDelegate?
+//    weak var dataSource: NodeGraphViewDataSource?
+    var data: NodeGraphData = NodeGraphData()
     weak var parentScrollView: NodeGraphScrollView?
     
     override init(frame: CGRect)
@@ -51,20 +55,19 @@ public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
     
     func postInit() -> Void
     {
-        backgroundColor = UIColor.init(displayP3Red: 239.0/255.0, green: 239.0/255.0, blue: 244.0/255.0, alpha: 1.0)
+        backgroundColor = UIColor.clear
         containerView = NodeGraphContainerView(frame: self.bounds, nodeGraphView:self)
-        if let containerView = containerView
+        drawRectView = NodeGraphDrawRectView(frame: self.bounds, nodeGraphView:self)
+        if let drawRectView = drawRectView,let containerView = containerView
         {
             self.addSubview(containerView)
             containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             containerView.delegate = self
-        }
-        
-        drawRectView = NodeGraphDrawRectView(frame: self.bounds, nodeGraphView:self)
-        if let drawRectView = drawRectView
-        {
+            
             self.addSubview(drawRectView)
             drawRectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            
+            containerView.datasource = drawRectView
         }
     }
     

@@ -60,4 +60,14 @@ public class NodePortView: UIView
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+    
+    class func getSelfFromKnot(knot: NodePortKnotView) -> NodePortView?
+    {
+        var view : UIView = knot
+        while !view.isKind(of: NodePortView.self), let superview = view.superview
+        {
+            view = superview
+        }
+        return view.isKind(of: NodePortView.self) ? view as? NodePortView : nil
+    }
 }

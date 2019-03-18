@@ -15,9 +15,15 @@ public protocol NodeGraphContainerViewDelegate: AnyObject
     func showNodeList(nodeGraphContainerView: NodeGraphContainerView,location:CGPoint) -> Void
 }
 
+public protocol NodeGraphContainerViewDataSource: AnyObject
+{
+    func selectedNodeCurrentInteractiveState(point: CGPoint, dragging: Bool, fromNode: NodePortView?) -> Void
+}
+
 public class NodeGraphContainerView: UIView
 {
     weak var delegate: NodeGraphContainerViewDelegate?
+    weak var datasource : NodeGraphContainerViewDataSource?
     weak var nodeGraphView : NodeGraphView?
     var dynamicAnimator : UIDynamicAnimator?
     private var dynamicItemBehavior : UIDynamicItemBehavior = UIDynamicItemBehavior(items: [])
@@ -94,7 +100,59 @@ public class NodeGraphContainerView: UIView
     
     @objc func handleKnotPan(recognizer : UILongPressGestureRecognizer) -> Void
     {
-        
+        if let view = recognizer.view,
+            view.isKind(of: NodePortKnotView.self),
+            let knot : NodePortKnotView = view as? NodePortKnotView,
+            var portView : NodePortView = NodePortView.getSelfFromKnot(knot: knot),
+            let point : CGPoint = recognizer.location(in: self),
+            portView.nodeView?.data?.isSelected ?? false
+        {
+            // when remove connection from in-port, portview.data.connection is 1 and portview is inport
+            let shouldProxyingNodeInReverseDirection : Bool = portView.data?.connections.count == 1 && !portView.isOutPort
+            if shouldProxyingNodeInReverseDirection,
+                let proxyingNodeView : NodeView = portView.data?.connections.first?.inPort.node?.node,
+                let proxyingNodePortView : NodePortView = proxyingNodeView.ports.filter({$0.data?.index == portView.data?.connections.first?.inPort.index}).first
+            {
+                portView = proxyingNodePortView
+            }
+            
+            switch recognizer.state
+            {
+            case .began, .changed:
+                datasource?.selectedNodeCurrentInteractiveState(point: point, dragging: true, fromNode: portView)
+                break
+            case .ended:
+                if shouldProxyingNodeInReverseDirection
+                {
+                    portView.data?.breakAllConnections()
+                }
+                if let knotToConnect = getPortKnotFrom(point: point),
+                    let portViewToConnect = NodePortView.getSelfFromKnot(knot: knotToConnect),
+                    let portViewData = portView.data,
+                    let portViewToConnectData = portViewToConnect.data,
+                    let graphDataSource = nodeGraphView?.dataSource
+                {
+                    if portViewData.isInPortRelativeToConnection() &&
+                        portViewToConnectData.isOutPortRelativeToConnection() &&
+                        graphDataSource.canConnectNode(outPort: portViewData, inPort: portViewToConnectData)
+                    {
+                        graphDataSource.connectNode(outPort: portViewData, inPort: portViewToConnectData)
+                    }else if portViewData.isOutPortRelativeToConnection() &&
+                        portViewToConnectData.isInPortRelativeToConnection() &&
+                        graphDataSource.canConnectNode(outPort: portViewToConnectData, inPort: portViewData)
+                    {
+                        graphDataSource.connectNode(outPort: portViewToConnectData, inPort: portViewData)
+                    }
+                }
+                datasource?.selectedNodeCurrentInteractiveState(point: point, dragging: false, fromNode: nil)
+                break
+            case .cancelled, .failed:
+                datasource?.selectedNodeCurrentInteractiveState(point: point, dragging: false, fromNode: nil)
+                break
+            default:
+                break
+            }
+        }
     }
     
     func reloadData() -> Void
@@ -141,5 +199,14 @@ public class NodeGraphContainerView: UIView
             self.collisionBehavior.addItem(nodeView)
         }
         self.delegate?.nodeMoved(nodeGraphContainerView: self)
+    }
+    
+    func getPortKnotFrom(point : CGPoint) -> NodePortKnotView?
+    {
+        if let hitView = hitTest(point, with: nil), hitView.isKind(of: NodePortKnotView.self)
+        {
+            return hitView as? NodePortKnotView
+        }
+        return nil
     }
 }

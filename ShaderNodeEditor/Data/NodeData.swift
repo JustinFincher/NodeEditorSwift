@@ -19,7 +19,8 @@ public enum NodeType
 @objc public class NodeData: NSObject
 {
     weak var graph : NodeGraphData? = nil
-    
+    weak var node : NodeView? = nil
+        
     class var defaultCanHavePreview: Bool { return false }
     class var defaultPreviewOutportIndex: Int { return -1 }
     class var defaultTitle: String { return "" }

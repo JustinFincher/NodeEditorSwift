@@ -8,8 +8,9 @@
 
 import UIKit
 
-public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, NodeGraphViewDataSource,NodeListTableViewControllerSelectDelegate
-{    
+public class NodeEditorViewController: UIViewController, NodeListTableViewControllerSelectDelegate
+//NodeGraphViewDelegate, NodeGraphViewDataSource
+{
     let nodeEditorData : NodeGraphData = NodeGraphData()
     let nodeEditorView : NodeGraphScrollView = NodeGraphScrollView(frame: CGRect.zero, canvasSize: CGSize.init(width: 2000, height: 2000))
     
@@ -66,6 +67,15 @@ public class NodeEditorViewController: UIViewController, NodeGraphViewDelegate, 
     
     public func requiredViewController() -> NodeEditorViewController {
         return self
+    }
+    
+    public func canConnectNode(outPort: NodePortData, inPort: NodePortData) -> Bool
+    {
+        return nodeEditorData.canConnectNodeOutPort(outPort:outPort ,inPort: inPort)
+    }
+    
+    public func connectNode(outPort: NodePortData, inPort: NodePortData) -> Bool {
+        return nodeEditorData.connectNodeOutPort(outPort:outPort,inPort:inPort)
     }
     
     public func delete(node: NodeData)

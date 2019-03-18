@@ -9,22 +9,20 @@
 import Foundation
 import UIKit
 
-public class NodeGraphDrawRectView: UIView
+public class NodeGraphDrawRectView: UIView, NodeGraphContainerViewDataSource
 {
     weak var nodeGraphView : NodeGraphView?
     
-    override init(frame: CGRect)
-    {
-        super.init(frame: frame)
-        self.postInit()
-    }
+    var dragging : Bool = false
+    var position : CGPoint = CGPoint.zero
+    var draggingRelatedPortView : NodePortView? = nil
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.postInit()
     }
     
-    init(frame: CGRect, nodeGraphView: NodeGraphView)
+    required init(frame: CGRect, nodeGraphView: NodeGraphView)
     {
         super.init(frame: frame)
         self.nodeGraphView = nodeGraphView
@@ -46,10 +44,29 @@ public class NodeGraphDrawRectView: UIView
     
     override public func draw(_ rect: CGRect)
     {
+        guard let nodeGraphView = nodeGraphView,
+            let nodeGraphDataSource = nodeGraphView.dataSource
+            else
+        {
+            return
+        }
+        if dragging
+        {
+            var canConnect : Bool = false
+        }
         
     }
     
     func reloadData() -> Void {
         
+    }
+    
+    // MARK : - NodeGraphContainerViewDataSource
+    public func selectedNodeCurrentInteractiveState(point: CGPoint, dragging: Bool, fromNode: NodePortView?)
+    {
+        self.dragging = dragging
+        self.position = point
+        self.draggingRelatedPortView = fromNode
+        setNeedsDisplay()
     }
 }

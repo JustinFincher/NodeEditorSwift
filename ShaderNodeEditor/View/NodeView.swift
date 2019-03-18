@@ -22,6 +22,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                 }
                 return
             }
+            data.node = self
             ports.removeAll()
             inPortsContainer.removeFromSuperview()
             outPortsContainer.removeFromSuperview()
