@@ -70,4 +70,12 @@ public class NodePortView: UIView
         }
         return view.isKind(of: NodePortView.self) ? view as? NodePortView : nil
     }
+    
+    func getknotIndicatorPointRelativeToNodeView() -> CGPoint
+    {
+        guard let nodeView = self.nodeView else {
+            return CGPoint.zero
+        }
+        return nodeView.convert(knotIndicator.frame, from: knot).center()
+    }
 }

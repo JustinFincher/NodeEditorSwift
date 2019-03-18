@@ -122,15 +122,21 @@ public class NodeGraphData: NSObject
         return indexNodeDataDict[index]
     }
     
-    func addNode(node: NodeData) -> Bool
+    func addNode(node: NodeData) -> Void
     {
         node.index = NSNumber(integerLiteral: getNodesTotalCount()).stringValue
         singleNodes.insert(node)
         updateIndexNodeDataDict()
-        return true
     }
     
-    func removeNode(node: NodeData) -> Bool
+    func allNodeData() -> Array<NodeData>
+    {
+        return indexNodeDataDict.values.filter({ (data) -> Bool in
+            return true
+        })
+    }
+    
+    func removeNode(node: NodeData) -> Void
     {
         if singleNodes.contains(node)
         {
@@ -149,10 +155,9 @@ public class NodeGraphData: NSObject
         }
         node.breakAllConnections(clearPorts: true)
         updateIndexNodeDataDict()
-        return true
     }
     
-    func canConnectNodeOutPort(outPort:NodePortData, inPort:NodePortData) -> Bool
+    func canConnectNode(outPort:NodePortData, inPort:NodePortData) -> Bool
     {
         let can : Bool = (outPort.isOutPortRelativeToNode() &&
             inPort.isInPortRelativeToNode() &&
@@ -163,7 +168,7 @@ public class NodeGraphData: NSObject
         return can
     }
     
-    func connectNodeOutPort(outPort:NodePortData, inPort:NodePortData) -> Bool
+    func connectNode(outPort:NodePortData, inPort:NodePortData) -> Void
     {
         let nodeConnection : NodeConnectionData = NodeConnectionData()
         nodeConnection.inPort = outPort
@@ -177,16 +182,14 @@ public class NodeGraphData: NSObject
             singleNodes.remove(outPort.node!)
         }
         updateIndexNodeDataDict()
-        return true
     }
     
-    func breakConnection(connection:NodeConnectionData) -> Bool
+    func breakConnection(connection:NodeConnectionData) -> Void
     {
         connection.inPort.connections.remove(connection)
         connection.outPort.connections.remove(connection)
         singleNodes.insert(connection.inPort.node!)
         updateIndexNodeDataDict()
-        return true
     }
     
     private func updateIndexNodeDataDict() -> Void

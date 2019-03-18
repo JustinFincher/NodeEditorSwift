@@ -7,8 +7,22 @@
 //
 
 import Foundation
+import UIKit
 
-
+public extension CGRect
+{
+    public func center() -> CGPoint
+    {
+        return CGPoint.init(x: self.origin.x + self.size.width / 2.0, y: self.origin.y + self.size.height / 2.0)
+    }
+}
+public extension CGPoint
+{
+    public func applyOffset(x: CGFloat, y: CGFloat) -> CGPoint
+    {
+        return CGPoint.init(x: self.x + x, y: self.y + y)
+    }
+}
 public extension NSObject
 {
     public class func getClassHierarchy() -> [AnyClass] {

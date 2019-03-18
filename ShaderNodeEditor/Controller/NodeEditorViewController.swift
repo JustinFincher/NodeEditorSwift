@@ -8,9 +8,9 @@
 
 import UIKit
 
-public class NodeEditorViewController: UIViewController, NodeListTableViewControllerSelectDelegate
-//NodeGraphViewDelegate, NodeGraphViewDataSource
+public class NodeEditorViewController: UIViewController, NodeListTableViewControllerSelectDelegate, NodeGraphViewDelegate, NodeGraphViewDataSource
 {
+    
     let nodeEditorData : NodeGraphData = NodeGraphData()
     let nodeEditorView : NodeGraphScrollView = NodeGraphScrollView(frame: CGRect.zero, canvasSize: CGSize.init(width: 2000, height: 2000))
     
@@ -60,22 +60,36 @@ public class NodeEditorViewController: UIViewController, NodeListTableViewContro
         return nodeData.frame
     }
     
-    public func nodeGraphView(nodeGraphView: NodeGraphView, didSelectNodeWithIndex: String)
+    public func requiredViewController() -> NodeEditorViewController
     {
-            
+        return self
     }
     
-    public func requiredViewController() -> NodeEditorViewController {
-        return self
+    public func allNodeData() -> Array<NodeData> {
+        return nodeEditorData.allNodeData()
     }
     
     public func canConnectNode(outPort: NodePortData, inPort: NodePortData) -> Bool
     {
-        return nodeEditorData.canConnectNodeOutPort(outPort:outPort ,inPort: inPort)
+        return nodeEditorData.canConnectNode(outPort:outPort ,inPort: inPort)
     }
     
-    public func connectNode(outPort: NodePortData, inPort: NodePortData) -> Bool {
-        return nodeEditorData.connectNodeOutPort(outPort:outPort,inPort:inPort)
+    public func connectNode(outPort: NodePortData, inPort: NodePortData) -> Void
+    {
+        nodeEditorData.connectNode(outPort:outPort,inPort:inPort)
+    }
+    
+    public func canConnectPointIn(graphView: NodeGraphView, nodeOutPort: CGPoint, nodeInPort: CGPoint) -> Bool
+    {
+        if let outPortView = graphView.containerView?.getPortViewFrom(point: nodeOutPort),
+            let inPortView = graphView.containerView?.getPortViewFrom(point: nodeInPort),
+            let outPortViewData = outPortView.data,
+            let inPortViewData = inPortView.data,
+            canConnectNode(outPort: outPortViewData, inPort: inPortViewData)
+        {
+            return true
+        }
+        return false
     }
     
     public func delete(node: NodeData)
@@ -97,10 +111,7 @@ public class NodeEditorViewController: UIViewController, NodeListTableViewContro
                                         height: nodeData.frame.size.height)
         
         nodeData.frame = rect
-        if !nodeEditorData.addNode(node: nodeData)
-        {
-            
-        }
+        nodeEditorData.addNode(node: nodeData)
     }
 }
 

@@ -23,6 +23,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
                 return
             }
             data.node = self
+            titleLabel.text = data.title
             ports.removeAll()
             inPortsContainer.removeFromSuperview()
             outPortsContainer.removeFromSuperview()
@@ -137,9 +138,9 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         super.init(frame: frame)
         defer
         {
-            self.data = data
-            self.graphContainerView = parent
             postInit()
+            self.graphContainerView = parent
+            self.data = data
         }
     }
     
@@ -161,6 +162,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         visualEffectView.layer.masksToBounds = true
         visualEffectView.layer.cornerRadius = 8
         addSubview(visualEffectView)
+        
         
         tap = UITapGestureRecognizer(target: self,
                                      action: #selector(handleTap(recognizer:)))
@@ -184,7 +186,6 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         }
         
         titleLabel.frame = CGRect.init(x: Constant.nodePadding, y: Constant.nodePadding, width: self.frame.size.width - Constant.nodePadding * 2, height: Constant.nodeTitleHeight)
-        titleLabel.text = data?.title
         titleLabel.font = UIFont.init(name: Constant.fontObliqueName, size: 16)
         
         visualEffectView.contentView.addSubview(titleLabel)
@@ -199,6 +200,12 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         previewView.layer.cornerRadius = 8
         previewView.layer.masksToBounds = true
         previewView.showsFPS = true
+    }
+    
+    func makeSelected() -> Void
+    {
+        graphContainerView?.bringSubviewToFront(self)
+        nodeViewSelectedHandler?()
     }
     
     func updateNode() -> Void
@@ -219,8 +226,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
     
     @objc func handleTap(recognizer : UITapGestureRecognizer) -> Void
     {
-        graphContainerView?.bringSubviewToFront(self)
-        nodeViewSelectedHandler?()
+        makeSelected()
         if let pushBehavior = pushBehavior
         {
             self.graphContainerView?.dynamicAnimator?.removeBehavior(pushBehavior)
@@ -247,8 +253,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
     
     @objc func handleLongPress(recognizer : UILongPressGestureRecognizer) -> Void
     {
-        graphContainerView?.bringSubviewToFront(self)
-        nodeViewSelectedHandler?()
+        makeSelected()
         switch recognizer.state
         {
         case .began:
@@ -280,8 +285,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
     
     @objc func handlePan(recognizer : UIPanGestureRecognizer) -> Void
     {
-        graphContainerView?.bringSubviewToFront(self)
-        nodeViewSelectedHandler?()
+        makeSelected()
         let velocityInParent = recognizer.velocity(in: graphContainerView)
         let locationInSelf = recognizer.location(in: self)
         

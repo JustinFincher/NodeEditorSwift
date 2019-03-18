@@ -9,30 +9,29 @@
 import Foundation
 import UIKit
 
-//public protocol NodeGraphViewDelegate: AnyObject
-//{
-//    func nodeGraphView(nodeGraphView: NodeGraphView, frameForNodeWithIndex: String) -> CGRect
-//    func nodeGraphView(nodeGraphView: NodeGraphView, didSelectNodeWithIndex: String)
-//}
-//
-//public protocol NodeGraphViewDataSource: AnyObject
-//{
-//    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
-//    func numberOfNodes(in: NodeGraphView) -> Int
-//    func canConnectNode(outPort: NodePortData, inPort: NodePortData) -> Bool
-//    func connectNode(outPort: NodePortData, inPort: NodePortData) -> Bool
-//    func canConnectPointIn(outPort: CGPoint, inPort:CGPoint) -> Bool
-//    func delete(node: NodeData) -> Void
-//    func requiredViewController() -> NodeEditorViewController
-//}
+public protocol NodeGraphViewDelegate: AnyObject
+{
+    func nodeGraphView(nodeGraphView: NodeGraphView, frameForNodeWithIndex: String) -> CGRect
+}
+
+public protocol NodeGraphViewDataSource: AnyObject
+{
+    func nodeGraphView(nodeGraphView: NodeGraphView, nodeWithIndex: String) -> NodeView?
+    func numberOfNodes(in: NodeGraphView) -> Int
+    func canConnectNode(outPort: NodePortData, inPort: NodePortData) -> Bool
+    func connectNode(outPort: NodePortData, inPort: NodePortData) -> Void
+    func canConnectPointIn(graphView: NodeGraphView,nodeOutPort: CGPoint, nodeInPort:CGPoint) -> Bool
+    func delete(node: NodeData) -> Void
+    func requiredViewController() -> NodeEditorViewController
+    func allNodeData() -> Array<NodeData>
+}
 
 public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
 {
     var containerView : NodeGraphContainerView?
     var drawRectView : NodeGraphDrawRectView?
-//    weak var delegate: NodeGraphViewDelegate?
-//    weak var dataSource: NodeGraphViewDataSource?
-    var data: NodeGraphData = NodeGraphData()
+    weak var delegate: NodeGraphViewDelegate?
+    weak var dataSource: NodeGraphViewDataSource?
     weak var parentScrollView: NodeGraphScrollView?
     
     override init(frame: CGRect)
@@ -93,6 +92,7 @@ public class NodeGraphView: UIView, NodeGraphContainerViewDelegate
             self.drawRectView!.setNeedsDisplay()
         }
     }
+    
     
     public func showNodeList(nodeGraphContainerView: NodeGraphContainerView, location: CGPoint)
     {

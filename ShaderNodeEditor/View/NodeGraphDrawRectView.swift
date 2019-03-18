@@ -31,29 +31,75 @@ public class NodeGraphDrawRectView: UIView, NodeGraphContainerViewDataSource
     
     func postInit() -> Void
     {
-        isUserInteractionEnabled = true
+        isUserInteractionEnabled = false
         isOpaque = false
         backgroundColor = UIColor.clear
     }
     
-    override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
-    {
-        setNeedsDisplay()
-        return nil
-    }
+//    override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
+//    {
+//        setNeedsDisplay()
+//        return nil
+//    }
     
     override public func draw(_ rect: CGRect)
     {
-        guard let nodeGraphView = nodeGraphView,
+        guard let nodeGraphView : NodeGraphView = nodeGraphView,
+            let nodeContainerView = nodeGraphView.containerView,
             let nodeGraphDataSource = nodeGraphView.dataSource
             else
         {
             return
         }
-        if dragging
+        var lineColor : UIColor = UIColor.white
+        if let draggingRelatedPortView : NodePortView = self.draggingRelatedPortView,
+            let dragginRelativePortData : NodePortData = draggingRelatedPortView.data,
+            dragging
         {
             var canConnect : Bool = false
+            
+            let dragStartPos = nodeContainerView.convert(draggingRelatedPortView.getknotIndicatorPointRelativeToNodeView(), from: draggingRelatedPortView.nodeView)
+            let dragEndPos = position
+            
+            let connectionInPos = dragginRelativePortData.isInPortRelativeToConnection() ? dragStartPos : dragEndPos
+            let connectionOutPos = dragginRelativePortData.isInPortRelativeToConnection() ? dragEndPos : dragStartPos
+            canConnect = nodeGraphDataSource.canConnectPointIn(graphView: nodeGraphView, nodeOutPort: connectionInPos, nodeInPort: connectionOutPos)
+            lineColor = canConnect ? UIColor.green.withAlphaComponent(0.6) : UIColor.red.withAlphaComponent(0.6)
+            drawLineConnection(inPoint: connectionInPos, outPoint: connectionOutPos, color: lineColor, width: 8.0)
         }
+        
+        lineColor = UIColor.yellow.withAlphaComponent(0.6)
+        nodeGraphView.dataSource?.allNodeData().forEach({ (connectionOutNodeData) in
+            connectionOutNodeData.inPorts.forEach({ (connectionOutNodePortData) in
+                connectionOutNodePortData.connections.forEach({ (nodeConnectioData) in
+                    if let connectionInNodeData : NodeData = nodeConnectioData.inPort.node,
+                        let connectionInNodeView : NodeView = nodeGraphView.containerView?.getNodeView(index: connectionInNodeData.index),
+                        let connectionOutNodeView : NodeView = nodeGraphView.containerView?.getNodeView(index: connectionOutNodeData.index),
+                        let connectionInNodePortView : NodePortView = connectionInNodeView.ports.filter({ $0.data?.index == nodeConnectioData.inPort.index }).first,
+                        let connectionOutNodePortView : NodePortView = connectionOutNodeView.ports.filter({ $0.data?.index == nodeConnectioData.outPort.index }).first
+                    {
+                        let connectionInPos = nodeContainerView.convert(connectionInNodePortView.getknotIndicatorPointRelativeToNodeView(), from: connectionInNodeView)
+                        let connectionOutPos = nodeContainerView.convert(connectionOutNodePortView.getknotIndicatorPointRelativeToNodeView(), from: connectionOutNodeView)
+                        drawLineConnection(inPoint: connectionInPos, outPoint: connectionOutPos, color: lineColor, width: 5.0)
+                    }
+                })
+            })
+        })
+        
+    }
+    
+    func drawLineConnection(inPoint:CGPoint,outPoint:CGPoint,color:UIColor,width:CGFloat) -> Void
+    {
+        let path : UIBezierPath = UIBezierPath.init()
+        color.set()
+        path.lineWidth = width
+        path.lineCapStyle = .round
+        path.lineJoinStyle = .round
+        path.move(to: inPoint)
+        path.addCurve(to: outPoint,
+                      controlPoint1: inPoint.applyOffset(x: Constant.nodeConnectionCurveControlOffset, y: 0),
+                      controlPoint2: outPoint.applyOffset(x: -Constant.nodeConnectionCurveControlOffset, y: 0))
+        path.stroke()
         
     }
     

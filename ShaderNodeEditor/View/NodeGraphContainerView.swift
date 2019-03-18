@@ -42,6 +42,12 @@ public class NodeGraphContainerView: UIView
         self.postInit()
     }
     
+    func getNodeView(index : String) -> NodeView?
+    {
+        let nodeViews = self.subviews.filter{$0 is NodeView}.compactMap{$0 as? NodeView}
+        return nodeViews.filter({$0.data?.index == index}).first
+    }
+    
     func postInit() -> Void
     {
         backgroundColor = UIColor.clear
@@ -103,10 +109,9 @@ public class NodeGraphContainerView: UIView
         if let view = recognizer.view,
             view.isKind(of: NodePortKnotView.self),
             let knot : NodePortKnotView = view as? NodePortKnotView,
-            var portView : NodePortView = NodePortView.getSelfFromKnot(knot: knot),
-            let point : CGPoint = recognizer.location(in: self),
-            portView.nodeView?.data?.isSelected ?? false
+            var portView : NodePortView = NodePortView.getSelfFromKnot(knot: knot)
         {
+            let point : CGPoint = recognizer.location(in: self)
             // when remove connection from in-port, portview.data.connection is 1 and portview is inport
             let shouldProxyingNodeInReverseDirection : Bool = portView.data?.connections.count == 1 && !portView.isOutPort
             if shouldProxyingNodeInReverseDirection,
@@ -126,8 +131,7 @@ public class NodeGraphContainerView: UIView
                 {
                     portView.data?.breakAllConnections()
                 }
-                if let knotToConnect = getPortKnotFrom(point: point),
-                    let portViewToConnect = NodePortView.getSelfFromKnot(knot: knotToConnect),
+                if  let portViewToConnect = getPortViewFrom(point: point),
                     let portViewData = portView.data,
                     let portViewToConnectData = portViewToConnect.data,
                     let graphDataSource = nodeGraphView?.dataSource
@@ -201,11 +205,20 @@ public class NodeGraphContainerView: UIView
         self.delegate?.nodeMoved(nodeGraphContainerView: self)
     }
     
-    func getPortKnotFrom(point : CGPoint) -> NodePortKnotView?
+    func getPortKnotViewFrom(point : CGPoint) -> NodePortKnotView?
     {
         if let hitView = hitTest(point, with: nil), hitView.isKind(of: NodePortKnotView.self)
         {
             return hitView as? NodePortKnotView
+        }
+        return nil
+    }
+    
+    func getPortViewFrom(point: CGPoint) -> NodePortView?
+    {
+        if let knot = getPortKnotViewFrom(point: point), let portView = NodePortView.getSelfFromKnot(knot: knot)
+        {
+            return portView
         }
         return nil
     }
