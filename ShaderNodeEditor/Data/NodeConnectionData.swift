@@ -18,6 +18,6 @@ public class NodeConnectionData: NSObject
         let outputRequiredCGType = outPort.requiredType.defaultCGType
         let outPortName = outPort.getPortVariableName()
         let inPortName = inPort.getPortVariableName()
-        return "\(outputRequiredCGType) \(outPortName) = \(inPortName)"
+        return "\(outputRequiredCGType) \(outPortName) = \(inPortName);"
     }
 }

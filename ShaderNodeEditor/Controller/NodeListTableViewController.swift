@@ -18,21 +18,12 @@ public class NodeListTableViewController: UIViewController, UIPopoverPresentatio
     weak var delegate : NodeListTableViewControllerSelectDelegate?
     var tableViewDataSource : Array<AnyClass> = []
     let tableView : UITableView = UITableView(frame: CGRect.zero, style: UITableView.Style.plain)
-    let loadingIndicator : UIActivityIndicatorView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.gray)
     
     override public func viewDidLoad()
     {
         super.viewDidLoad()
-        self.tableView.alpha = 0.0
         self.title = "Add a node"
         view.backgroundColor = UIColor.white
-        
-        loadingIndicator.frame = CGRect.init(origin: CGPoint.init(x:
-            (self.view.frame.size.width - loadingIndicator.frame.size.width)/2.0, y:
-            (self.view.frame.size.height - loadingIndicator.frame.size.height)/2.0), size: loadingIndicator.frame.size)
-        loadingIndicator.autoresizingMask = [.flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
-        self.view.addSubview(loadingIndicator)
-        loadingIndicator.startAnimating()
         
         tableView.frame = self.view.bounds
         tableView.delegate = self
@@ -41,19 +32,8 @@ public class NodeListTableViewController: UIViewController, UIPopoverPresentatio
         self.view.addSubview(tableView)
         tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        DispatchQueue.global(qos: .background).async
-            {
-                self.tableViewDataSource = NodeInfoCacheManager.shared.getNodeClasses()
-                DispatchQueue.main.async
-                    {
-                        self.tableView.reloadData()
-                        UIView.animate(withDuration: 0.5, animations: {
-                            self.tableView.alpha = 1.0
-                        })
-                }
-        }
-        
-        
+        tableViewDataSource = NodeInfoCacheManager.shared.getNodeClasses()
+        tableView.reloadData()
     }
     
     // MARK: - Table view data source

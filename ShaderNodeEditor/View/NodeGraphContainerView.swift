@@ -29,6 +29,7 @@ public class NodeGraphContainerView: UIView
     private var dynamicItemBehavior : UIDynamicItemBehavior = UIDynamicItemBehavior(items: [])
     private var collisionBehavior : UICollisionBehavior = UICollisionBehavior(items: [])
     private var longPress: UILongPressGestureRecognizer?
+    private var tap: UITapGestureRecognizer?
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -85,12 +86,18 @@ public class NodeGraphContainerView: UIView
         dynamicAnimator.addBehavior(collisionBehavior)
         
         longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(recognizer:)))
-        if let longPress = longPress
+        tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(recognizer:)))
+        if let longPress = longPress,
+            let tap = tap
         {
             self.addGestureRecognizer(longPress)
+            self.addGestureRecognizer(tap)
         }
     }
-    
+    @objc func handleTap(recognizer : UITapGestureRecognizer) -> Void
+    {
+        self.becomeFirstResponder()
+    }
     @objc func handleLongPress(recognizer : UILongPressGestureRecognizer) -> Void
     {
         switch recognizer.state
@@ -221,5 +228,10 @@ public class NodeGraphContainerView: UIView
             return portView
         }
         return nil
+    }
+    
+    public override var canBecomeFirstResponder: Bool
+    {
+        return true
     }
 }

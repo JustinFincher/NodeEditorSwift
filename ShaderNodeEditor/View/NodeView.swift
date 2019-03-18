@@ -27,27 +27,43 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             ports.removeAll()
             inPortsContainer.removeFromSuperview()
             outPortsContainer.removeFromSuperview()
-            if data.inPorts.count != 0 || data.outPorts.count != 0
+            
+            customView.removeFromSuperview()
+            customView.subviews.forEach { (view) in
+                view.removeFromSuperview()
+            }
+            customView.frame = CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
+                                                                y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding),
+                                           size: CGSize.init(width: self.frame.size.width - Constant.nodePadding * 2,
+                                                             height: data.customViewHeight))
+            if data.customViewHeight > 0
+            {
+                data.setupCustomView(view: customView)
+                visualEffectView.contentView.addSubview(customView)
+            }
+            
+            let customViewHeightWithPadding : CGFloat =  data.customViewHeight > 0 ? (data.customViewHeight + Constant.nodePadding) : 0
+            if data.inPorts.count != 0 && data.outPorts.count != 0
             {
                 inPortsContainer.frame = CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
-                                                                          y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding),
+                                                                          y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding + customViewHeightWithPadding),
                                                      size: CGSize.init(width: (self.frame.size.width - Constant.nodePadding * 3) / 2.0,
                                                                        height: CGFloat(data.inPorts.count) * Constant.nodePortHeight))
                 outPortsContainer.frame = CGRect.init(origin: CGPoint.init(x: (self.frame.size.width + Constant.nodePadding) / 2.0,
-                                                                           y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding),
+                                                                           y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding + customViewHeightWithPadding),
                                                       size: CGSize.init(width: (self.frame.size.width - Constant.nodePadding * 3) / 2.0,
                                                                         height: CGFloat(data.outPorts.count) * Constant.nodePortHeight))
-            }else if (data.inPorts.count == 0 || data.outPorts.count != 0)
+            }else if (data.inPorts.count == 0 && data.outPorts.count != 0)
             {
                 inPortsContainer.frame = CGRect.zero
                 outPortsContainer.frame = CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
-                                                                           y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding),
+                                                                           y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding + customViewHeightWithPadding),
                                                       size: CGSize.init(width: self.frame.size.width - Constant.nodePadding * 2,
                                                                         height: CGFloat(data.outPorts.count) * Constant.nodePortHeight))
-            }else if (data.inPorts.count != 0 || data.outPorts.count == 0)
+            }else if (data.inPorts.count != 0 && data.outPorts.count == 0)
             {
                 inPortsContainer.frame = CGRect.init(origin: CGPoint.init(x: Constant.nodePadding,
-                                                                          y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding),
+                                                                          y: Constant.nodePadding + Constant.nodeTitleHeight + Constant.nodePadding + customViewHeightWithPadding),
                                                      size: CGSize.init(width: self.frame.size.width - Constant.nodePadding * 2,
                                                                        height: CGFloat(data.inPorts.count) * Constant.nodePortHeight))
                 outPortsContainer.frame = CGRect.zero
@@ -119,7 +135,8 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
     var pushBehavior : UIPushBehavior?
     var ports : Set<NodePortView> = []
     let previewView : SKView = SKView(frame: CGRect.zero)
-    let valueView : UIView = UIView(frame: CGRect.zero)
+    let customView : UIView = UIView(frame: CGRect.zero)
+    
     
     var tap: UITapGestureRecognizer?
     var longPress : UILongPressGestureRecognizer?
@@ -166,23 +183,22 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         
         tap = UITapGestureRecognizer(target: self,
                                      action: #selector(handleTap(recognizer:)))
-        if let tap = tap
-        {
-            addGestureRecognizer(tap)
-        }
+
         pan = UIPanGestureRecognizer(target: self,
                                      action: #selector(handlePan(recognizer:)))
-        if let pan = pan
-        {
-            pan.delegate = self
-            addGestureRecognizer(pan)
-        }
+
         longPress = UILongPressGestureRecognizer(target: self,
                                                  action: #selector(handleLongPress(recognizer:)))
-        if let longPress = longPress
+        if let longPress = longPress,
+            let pan = pan,
+            let tap = tap
         {
+            addGestureRecognizer(tap)
+            pan.delegate = self
+            addGestureRecognizer(pan)
             longPress.delegate = self
             addGestureRecognizer(longPress)
+            longPress.require(toFail: pan)
         }
         
         titleLabel.frame = CGRect.init(x: Constant.nodePadding, y: Constant.nodePadding, width: self.frame.size.width - Constant.nodePadding * 2, height: Constant.nodeTitleHeight)
@@ -200,12 +216,17 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         previewView.layer.cornerRadius = 8
         previewView.layer.masksToBounds = true
         previewView.showsFPS = true
+        
+        customView.layer.masksToBounds = true
+        customView.layer.cornerRadius = 8
+        customView.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
     }
     
     func makeSelected() -> Void
     {
         graphContainerView?.bringSubviewToFront(self)
         nodeViewSelectedHandler?()
+        self.becomeFirstResponder()
     }
     
     func updateNode() -> Void
@@ -241,6 +262,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         })
         scaleAnimator?.addAnimations({
             self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleNormal, y: Constant.nodeScaleNormal)
+            self.markNodeMoved()
         }, delayFactor: 0.5)
         scaleAnimator?.startAnimation()
         
@@ -265,6 +287,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleZoomed, y: Constant.nodeScaleZoomed)
                 self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
+                self.markNodeMoved()
             })
             scaleAnimator?.startAnimation()
             self.becomeFirstResponder()
@@ -276,6 +299,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleNormal, y: Constant.nodeScaleNormal)
                 self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
+                self.markNodeMoved()
             })
             scaleAnimator?.startAnimation()
             break
@@ -300,10 +324,12 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleZoomed, y: Constant.nodeScaleZoomed)
                 self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
+                self.markNodeMoved()
             })
             scaleAnimator?.addCompletion({ (finalPosition) in
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleZoomed, y: Constant.nodeScaleZoomed)
                 self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
+                self.markNodeMoved()
             })
             scaleAnimator?.startAnimation()
             
@@ -318,6 +344,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             attachmentBehavior?.action = {
                 self.updateNode()
                 self.transform = self.transform.scaledBy(x: Constant.nodeScaleZoomed, y: Constant.nodeScaleZoomed)
+                self.markNodeMoved()
             }
             if let attachmentBehavior = attachmentBehavior
             {
@@ -341,10 +368,12 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             scaleAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleNormal, y: Constant.nodeScaleNormal)
                 self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
+                self.markNodeMoved()
             })
             scaleAnimator?.addCompletion({ (finalPosition) in
                 self.transform = CGAffineTransform.init(scaleX: Constant.nodeScaleNormal, y: Constant.nodeScaleNormal)
                 self.graphContainerView?.dynamicAnimator?.updateItem(usingCurrentState: self)
+                self.markNodeMoved()
             })
             scaleAnimator?.startAnimation()
             
@@ -357,6 +386,7 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
             {
                 pushBehavior.action = {
                     self.updateNode()
+                    self.markNodeMoved()
                 }
                 let length = hypot(velocityInParent.x, velocityInParent.y)
                 if length > 100
@@ -372,6 +402,13 @@ public class NodeView: UIView, UIGestureRecognizerDelegate
         }
     }
     
+    func markNodeMoved() -> Void
+    {
+        guard let graphContainerView = graphContainerView else {
+            return
+        }
+        graphContainerView.delegate?.nodeMoved(nodeGraphContainerView: graphContainerView)
+    }
     
     // MARK : - Menu
     

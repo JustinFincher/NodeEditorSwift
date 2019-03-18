@@ -24,4 +24,9 @@ class NodeInfoCacheManager: NSObject
     {
         return nodeClasses
     }
+    
+    func warmUp() -> Void
+    {
+        
+    }
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class NodeGraphScrollView: UIScrollView, UIScrollViewDelegate
+class NodeGraphScrollView: UIScrollView, UIScrollViewDelegate
 {
     var nodeGraphView : NodeGraphView?
     var canvasSize : CGSize = CGSize.zero
@@ -35,16 +35,15 @@ public class NodeGraphScrollView: UIScrollView, UIScrollViewDelegate
     {
         self.backgroundColor = UIColor.init(displayP3Red: 239.0/255.0, green: 239.0/255.0, blue: 244.0/255.0, alpha: 1.0)
         self.isScrollEnabled = true
-        self.isUserInteractionEnabled = true
         self.maximumZoomScale = 1
         self.minimumZoomScale = 0.2
-        self.delegate = self
         nodeGraphView = NodeGraphView(frame: CGRect.init(origin: CGPoint.zero, size: canvasSize), parentScrollView: self)
         self.addSubview(nodeGraphView!)
         self.contentSize = (nodeGraphView?.frame.size)!
+        self.delegate = self
     }
     
-    private func viewForZooming(in scrollView: UIScrollView) -> UIView?
+    func viewForZooming(in scrollView: UIScrollView) -> UIView?
     {
         return scrollView == self ? nodeGraphView : nil
     }

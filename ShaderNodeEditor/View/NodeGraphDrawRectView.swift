@@ -35,13 +35,7 @@ public class NodeGraphDrawRectView: UIView, NodeGraphContainerViewDataSource
         isOpaque = false
         backgroundColor = UIColor.clear
     }
-    
-//    override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
-//    {
-//        setNeedsDisplay()
-//        return nil
-//    }
-    
+
     override public func draw(_ rect: CGRect)
     {
         guard let nodeGraphView : NodeGraphView = nodeGraphView,

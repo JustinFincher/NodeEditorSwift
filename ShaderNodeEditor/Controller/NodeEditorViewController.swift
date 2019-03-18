@@ -13,13 +13,25 @@ public class NodeEditorViewController: UIViewController, NodeListTableViewContro
     
     let nodeEditorData : NodeGraphData = NodeGraphData()
     let nodeEditorView : NodeGraphScrollView = NodeGraphScrollView(frame: CGRect.zero, canvasSize: CGSize.init(width: 2000, height: 2000))
+    let loadingIndicator : UIActivityIndicatorView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.gray)
     
     override public func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        loadingIndicator.frame = CGRect.init(origin: CGPoint.init(x:
+            (self.view.frame.size.width - loadingIndicator.frame.size.width)/2.0, y:
+            (self.view.frame.size.height - loadingIndicator.frame.size.height)/2.0), size: loadingIndicator.frame.size)
+        loadingIndicator.autoresizingMask = [.flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        self.view.addSubview(loadingIndicator)
+        loadingIndicator.startAnimating()
+        
+        
         self.title = "Shader Node Editor"
         nodeEditorView.frame = self.view.bounds
         nodeEditorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        nodeEditorView.isUserInteractionEnabled = false
+        nodeEditorView.alpha = 0.0
         self.view.addSubview(nodeEditorView)
         
         if let nodeGraphView : NodeGraphView = nodeEditorView.nodeGraphView
@@ -33,6 +45,20 @@ public class NodeEditorViewController: UIViewController, NodeListTableViewContro
                     nodeGraphView.reloadData()
                 }
             }
+        }
+        
+        DispatchQueue.global(qos: .background).async
+            {
+                print("warmUp +")
+                NodeInfoCacheManager.shared.warmUp()
+                DispatchQueue.main.async
+                    {
+                        print("warmUp -")
+                        self.nodeEditorView.isUserInteractionEnabled = true
+                        UIView.animate(withDuration: 0.5, animations: {
+                            self.nodeEditorView.alpha = 1.0
+                        })
+                }
         }
     }
     

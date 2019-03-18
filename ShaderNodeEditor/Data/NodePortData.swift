@@ -35,7 +35,7 @@ public class NodePortData: NSObject
     
     func getPortDefaultValueExpression() -> String
     {
-        return requiredType.defaultCGType + " " + getPortVariableName() + " = " + requiredType.defaultCGValue
+        return requiredType.defaultCGType + " " + getPortVariableName() + " = " + requiredType.defaultCGValue + ";"
     }
     
     func getPortVariableName() -> String

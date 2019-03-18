@@ -25,7 +25,7 @@ public enum NodeType
     class var defaultPreviewOutportIndex: Int { return -1 }
     class var defaultTitle: String { return "" }
     class var defaultSize: CGSize { return CGSize.init(width: Constant.nodeWidth,height: 0) }
-    class var defaultCustomViewSize: CGSize { return CGSize.zero }
+    class var customViewHeight: CGFloat { return 0 }
     class var defaultInPorts: Array<NodePortData> { return [] }
     class var defaultOutPorts: Array<NodePortData> { return [] }
     
@@ -50,6 +50,7 @@ public enum NodeType
     var previewOutportIndex : Int = -1
     var isSelected : Bool = false
     var hasPreview : Bool = false
+    var customViewHeight : CGFloat = 0
     
     required override init()
     {
@@ -59,10 +60,13 @@ public enum NodeType
         outPorts = type(of: self).defaultOutPorts
         previewOutportIndex = type(of: self).defaultPreviewOutportIndex
         hasPreview = type(of: self).defaultCanHavePreview
+        customViewHeight = type(of: self).customViewHeight
         
         let width : CGFloat = Constant.nodeWidth
         let height : CGFloat = Constant.nodePadding +
             Constant.nodeTitleHeight +
+            (customViewHeight > 0 ? Constant.nodePadding : 0) +
+            customViewHeight +
             (max(inPorts.count, outPorts.count) > 0 ? Constant.nodePadding : 0) +
             Constant.nodePortHeight * CGFloat(max(inPorts.count, outPorts.count)) +
             (hasPreview ? Constant.nodePadding : 0) +
@@ -80,6 +84,12 @@ public enum NodeType
     
     // combined shader blocks only, do not override
     var shaderBlocksCombinedExpression : String = ""
+    {
+        didSet
+        {
+            print(shaderBlocksCombinedExpression)
+        }
+    }
     
     // preview shader expression gl_FragColor only, need to override
     func shaderFinalColorExperssion() -> String
@@ -112,7 +122,7 @@ public enum NodeType
         return "\n// \(type(of: self)) Index \(index)\n"
     }
     
-    func declareInPortsExpression() -> Void
+    func declareInPortsExpression() -> String
     {
         var expression = ""
         inPorts.forEach { (data) in
@@ -125,6 +135,7 @@ public enum NodeType
             }
             expression.append("\n")
         }
+        return expression
     }
     
     func breakAllConnections(clearPorts: Bool) -> Void
@@ -146,6 +157,11 @@ public enum NodeType
     func nodeType() -> NodeType
     {
         return NodeType.Generator
+    }
+    
+    func setupCustomView(view: UIView) -> Void
+    {
+        
     }
     
 }

@@ -76,17 +76,22 @@ public class UpdateDictOperation: Operation
         guard let node = node else { return }
         
         // add new index in the global list
-        shaderListDict.updateValue([], forKey:node.index)
+        if !shaderListDict.keys.contains(node.index)
+        {
+            shaderListDict.updateValue(Array<String>(), forKey:node.index)
+        }
         
         // loop current list and for each add the current shader block
-        for (_, var nodeShaderBlocksList) in shaderListDict
+        for (key, nodeShaderBlocksList) in shaderListDict
         {
+            var nodeShaderBlocksList : Array<String> = nodeShaderBlocksList
             if nodeShaderBlocksList.contains(node.singleNodeExpressionRule())
             {
                 // remove for later add, making the required reference always at the top
                 nodeShaderBlocksList.removeAll { $0 == node.singleNodeExpressionRule() }
             }
             nodeShaderBlocksList.insert(node.singleNodeExpressionRule(), at: 0)
+            shaderListDict.updateValue(nodeShaderBlocksList, forKey:key)
         }
         
         for nodeInPort in node.inPorts {
@@ -109,6 +114,9 @@ public class NodeGraphData: NSObject
     public override init()
     {
         super.init()
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: Constant.notificationNameShaderModified), object: nil, queue: OperationQueue.main) { (notif) in
+                   self.updateIndexNodeDataDict()
+        }
         updateIndexNodeDataDict()
     }
     
@@ -124,6 +132,7 @@ public class NodeGraphData: NSObject
     
     func addNode(node: NodeData) -> Void
     {
+        node.graph = self
         node.index = NSNumber(integerLiteral: getNodesTotalCount()).stringValue
         singleNodes.insert(node)
         updateIndexNodeDataDict()

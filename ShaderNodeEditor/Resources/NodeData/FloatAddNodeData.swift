@@ -33,7 +33,7 @@ import UIKit
         """
         \(shaderCommentHeader())
         \(declareInPortsExpression())
-        float \(outPorts[0].getPortVariableName()) = \(inPorts[0].getPortVariableName()) + \(inPorts[1].getPortVariableName())
+        float \(outPorts[0].getPortVariableName()) = \(inPorts[0].getPortVariableName()) + \(inPorts[1].getPortVariableName());
         """
          return result
     }
@@ -41,7 +41,6 @@ import UIKit
     // preview shader expression gl_FragColor only, need to override
     override func shaderFinalColorExperssion() -> String
     {
-        let zero : Float = 0;
-        return String(format: "gl_FragColor = vec4(%.8f,%.8f,%.8f,%.8f);",zero,zero,zero,zero)
+        return String(format: "gl_FragColor = vec4(\(outPorts[0].getPortVariableName()),\(outPorts[0].getPortVariableName()),\(outPorts[0].getPortVariableName()),1.0);")
     }
 }

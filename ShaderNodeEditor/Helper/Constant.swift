@@ -22,4 +22,5 @@ public class Constant: NSObject
     public static let fontBoldName = "Avenir-Black"
     public static let nodeKnotIndicatorInactiveColor = UIColor.black.withAlphaComponent(0.1)
     public static let nodeKnotIndicatorActiveColor = UIColor.red.withAlphaComponent(0.6)
+    public static let notificationNameShaderModified = "notificationNameShaderModified"
 }
